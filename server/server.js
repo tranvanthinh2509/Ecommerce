@@ -17,9 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 initRoutes(app);
 connectDatabase();
 
-app.use("/", (req, res) => {
-  res.send("Sever on ...");
-});
+// app.use("/", (req, res) => {
+//   res.send("Sever on ...");
+// });
 
 const port = process.env.PORT || 8888;
 const listener = app.listen(port, () => {
