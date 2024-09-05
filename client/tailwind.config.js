@@ -30,6 +30,9 @@ module.exports = {
         secondary1: "#1266dd",
         "[-red]": "#f60",
       },
+      borderRadius: {
+        "[-50]": "50%",
+      },
     },
   },
   plugins: [],
