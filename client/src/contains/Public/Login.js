@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { InputForm, Button } from "../../components";
 import { useLocation } from "react-router-dom";
-import { apiRegister } from "../../services/auth";
+import { apiRegister, apiLogin } from "../../services/auth";
+import Swal from "sweetalert2";
 
 function Login() {
   const location = useLocation();
@@ -12,6 +13,13 @@ function Login() {
     password: "",
   });
 
+  const resetPayLoad = () => {
+    setPayload({
+      name: "",
+      phone: "",
+      password: "",
+    });
+  };
   useEffect(() => {
     setSignIn(location?.state === null ? false : true);
   }, [location?.state]);
@@ -20,10 +28,22 @@ function Login() {
     setSignIn(!signIn);
   };
 
-  const handelSubmit = async () => {
-    const response = await apiRegister(payload);
-    console.log("respone ", response);
-  };
+  const handelSubmit = useCallback(async () => {
+    if (signIn) {
+      const response = await apiLogin(payload);
+      console.log("response1 ", response);
+    } else {
+      const response = await apiRegister(payload);
+      if (response.status === "OK") {
+        Swal.fire("Congratulation", response.msg, "success").then(() => {
+          setSignIn(true);
+          resetPayLoad();
+        });
+      } else {
+        Swal.fire("Oops", response.msg, "error");
+      }
+    }
+  }, [payload, signIn]);
 
   return (
     <div className="w-600 bg-white px-8 pt-8 pb-24 rounded-lg border">

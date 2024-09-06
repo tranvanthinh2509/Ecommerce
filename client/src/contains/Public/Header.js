@@ -1,94 +1,130 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Button } from "../../components";
 import { Link, useNavigate } from "react-router-dom";
 import images from "../../asset/image";
 import { CiCirclePlus } from "react-icons/ci";
 import { Menu } from "../../components/Menu";
-import { TbPencilPlus } from "react-icons/tb";
+import { FaPenNib, FaRegListAlt, FaWallet, FaHistory } from "react-icons/fa";
+import { RxAvatar } from "react-icons/rx";
+import { RiLogoutBoxRLine } from "react-icons/ri";
 function Header() {
+  const [openMenu, setOpenMenu] = useState(false);
+  const [user, setUser] = useState(false);
   const navigate = useNavigate();
   const goToLogin = useCallback((flag) => {
     navigate("/login", { state: flag });
   }, []);
 
+  const menuRef = useRef();
+
   const MenuUser = [
     {
       title: "Đăng tin cho thuê",
-      icon: <TbPencilPlus />,
+      icon: <FaPenNib color="#acac0f" />,
     },
     {
       title: "Quản lý tin đăng",
-      icon: <TbPencilPlus />,
+      icon: <FaRegListAlt color="red" />,
     },
     {
       title: "Nạp tiền",
-      icon: <TbPencilPlus />,
+      icon: <FaWallet color="#1c8b0e" />,
     },
     {
       title: "Lịch sử nạp tiền",
-      icon: <TbPencilPlus />,
+      icon: <FaHistory color="black" />,
     },
     {
       title: "Thông tin cá nhân",
-      icon: <TbPencilPlus />,
+      icon: <RxAvatar />,
     },
 
     {
       title: "Đăng xuất",
-      icon: <TbPencilPlus />,
+      icon: <RiLogoutBoxRLine />,
       separate: true,
     },
   ];
+
+  const handleOpenMenu = () => {
+    setOpenMenu(!openMenu);
+  };
+
+  useEffect(() => {
+    if (user === true) {
+      let handler = (e) => {
+        if (!menuRef.current.contains(e.target)) {
+          setOpenMenu(false);
+        }
+      };
+
+      document.addEventListener("click", handler);
+
+      return () => {
+        document.removeEventListener("click", handler);
+      };
+    }
+  });
+
   return (
     <div className="w-1100 flex items-center justify-between">
       <Link to="/">
         <Image src={images.logo} className="w-[240] h-[70] object-contain" />
       </Link>
 
-      {/* <div className="flex items-center justify-between gap-1">
-        <p>Phòng trọ 123 xin chào!</p>
-        <Button
-          text="Đăng Nhập"
-          textColor="text-white"
-          bgColor="bg-secondary1"
-          onClick={() => goToLogin(true)}
-        />
-        <Button
-          text="Đăng Ký"
-          textColor="text-white"
-          bgColor="bg-secondary1"
-          onClick={() => goToLogin(false)}
-        />
-        <Button
-          text="Đăng Tin Mới"
-          textColor="text-white"
-          bgColor="bg-secondary2"
-        />
-      </div> */}
-      <div className="flex items-center justify-between gap-5">
-        <div>
-          <span>
-            Xin chào, <span className="font-bold">Trần Văn Thịnh</span>
-          </span>
-          <p className="text-[-14]">
-            TK chính: <span>0</span> VND
-          </p>
-        </div>
-
-        <div className="relative">
-          <Image className="w-12 h-12 rounded-[-50] object-cover border-2  hover:cursor-pointer" />
-          <div className="mt-1 absolute top-full right-0">
-            <Menu MenuUser={MenuUser} />
+      {user ? (
+        <div className="flex items-center justify-between gap-5">
+          <div>
+            <span>
+              Xin chào, <span className="font-bold">Trần Văn Thịnh</span>
+            </span>
+            <p className="text-[-14]">
+              TK chính: <span>0</span> VND
+            </p>
           </div>
-        </div>
 
-        <Button
-          text="Đăng Tin Miễn Phí"
-          textColor="text-white"
-          bgColor="bg-secondary2"
-          icBefore={<CiCirclePlus fontSize="20px" />}
-        />
-      </div>
+          <div className="relative" ref={menuRef}>
+            <Image
+              className="w-12 h-12 rounded-[-50] object-cover border-2  hover:cursor-pointer"
+              onClick={handleOpenMenu}
+            />
+
+            {openMenu && (
+              <div className="mt-1 absolute top-full right-0">
+                <Menu MenuUser={MenuUser} />
+              </div>
+            )}
+          </div>
+
+          <Button
+            text="Đăng Tin Miễn Phí"
+            textColor="text-white"
+            bgColor="bg-secondary2"
+            icBefore={<CiCirclePlus fontSize="20px" />}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-1">
+          <p>Phòng trọ 123 xin chào!</p>
+          <Button
+            text="Đăng Nhập"
+            textColor="text-white"
+            bgColor="bg-secondary1"
+            onClick={() => goToLogin(true)}
+          />
+          <Button
+            text="Đăng Ký"
+            textColor="text-white"
+            bgColor="bg-secondary1"
+            onClick={() => goToLogin(false)}
+          />
+          <Button
+            text="Đăng Tin Mới"
+            textColor="text-white"
+            bgColor="bg-secondary2"
+          />
+        </div>
+      )}
     </div>
   );
 }
