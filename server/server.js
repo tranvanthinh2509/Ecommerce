@@ -1,18 +1,23 @@
-import express from "express";
+const express = require("express");
 require("dotenv").config();
-import cors from "cors";
-import initRoutes from "./src/routes";
-import connectDatabase from "./src/config/connectDatabase";
+const cors = require("cors");
+const initRoutes = require("./src/routes");
+const connectDatabase = require("./src/config/connectDatabase");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(
   cors({
     origin: process.env.ClIENT_URL,
     methods: ["POST", "PUT", "GET", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 initRoutes(app);
 connectDatabase();

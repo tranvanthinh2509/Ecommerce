@@ -30,7 +30,7 @@ const registerUser = (newUser) => {
         data: response[0] || null,
       });
     } catch (error) {
-      reject(e);
+      reject(error);
     }
   });
 };
@@ -45,7 +45,7 @@ const signInUser = (user) => {
       });
 
       if (checkUser === null) {
-        resolve({ status: "ERR", message: "The user is not defined" });
+        resolve({ status: "ERR", msg: "The user is not defined" });
       }
 
       const isCorrectPassword = bcrypt.compareSync(
@@ -56,7 +56,7 @@ const signInUser = (user) => {
       if (!isCorrectPassword) {
         resolve({
           status: "ERR",
-          message: "The password or user is incorrect",
+          msg: "The password or user is incorrect",
         });
       }
 
@@ -70,12 +70,31 @@ const signInUser = (user) => {
       });
       resolve({
         status: "OK",
-        message: "SUCCESS",
+        msg: "SUCCESS",
         access_token,
         refresh_token,
       });
     } catch (error) {
-      reject(e);
+      reject(error);
+    }
+  });
+};
+
+const detailUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await db.User.findOne({
+        where: { id: id },
+      });
+
+      console.log("user ", user?.dataValues);
+
+      resolve({
+        status: user?.dataValues ? "OK" : "ERR",
+        data: user?.dataValues || null,
+      });
+    } catch (error) {
+      reject(error);
     }
   });
 };
@@ -83,4 +102,5 @@ const signInUser = (user) => {
 module.exports = {
   registerUser,
   signInUser,
+  detailUser,
 };
