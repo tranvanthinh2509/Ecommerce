@@ -1,10 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { InputForm, Button } from "../../components";
 import { useLocation } from "react-router-dom";
-import { apiRegister, apiLogin } from "../../services/auth";
+import * as UserService from "../../services/auth";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slices/userSlice";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const [signIn, setSignIn] = useState(location?.state === null ? false : true);
   const [payload, setPayload] = useState({
@@ -28,12 +35,49 @@ function Login() {
     setSignIn(!signIn);
   };
 
+  const mutation = useMutationHooks((data) => {
+    const res = UserService.apiLogin(data.payload);
+    return res;
+  });
+
+  const { data, isSuccess, isError } = mutation;
+  useEffect(() => {
+    const response = data;
+    if (response) {
+      if (response?.status === "OK") {
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(response?.access_token)
+        );
+        if (response?.access_token) {
+          const decoded = jwtDecode(response?.access_token);
+          if (decoded?.id) {
+            handleGetDetailUser(decoded?.id, response?.access_token);
+          }
+        }
+
+        Swal.fire("Congratulation", response.msg, "success").then(() => {
+          navigate("/");
+        });
+      } else {
+        Swal.fire("Oops", response.msg, "error");
+      }
+    }
+  }, [isError, isSuccess]);
+
+  const handleGetDetailUser = async (id, token) => {
+    const res = await UserService.getDetailUser(id, token);
+    dispatch(updateUser({ ...res.data }));
+  };
+
   const handelSubmit = useCallback(async () => {
     if (signIn) {
-      const response = await apiLogin(payload);
-      console.log("response1 ", response);
+      // const response = await apiLogin(payload);
+      await mutation.mutate({ payload });
+
+      // const response = data;
     } else {
-      const response = await apiRegister(payload);
+      const response = await UserService.apiRegister(payload);
       if (response.status === "OK") {
         Swal.fire("Congratulation", response.msg, "success").then(() => {
           setSignIn(true);

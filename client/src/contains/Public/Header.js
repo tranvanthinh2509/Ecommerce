@@ -7,9 +7,12 @@ import { Menu } from "../../components/Menu";
 import { FaPenNib, FaRegListAlt, FaWallet, FaHistory } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
+import { useSelector } from "react-redux";
 function Header() {
+  const user1 = useSelector((state) => state.user.currentUser);
+  console.log("user1 ", user1);
   const [openMenu, setOpenMenu] = useState(false);
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(user1 ? true : false);
   const navigate = useNavigate();
   const goToLogin = useCallback((flag) => {
     navigate("/login", { state: flag });
@@ -72,7 +75,7 @@ function Header() {
         <Image src={images.logo} className="w-[240] h-[70] object-contain" />
       </Link>
 
-      {user ? (
+      {user1 ? (
         <div className="flex items-center justify-between gap-5">
           <div>
             <span>
