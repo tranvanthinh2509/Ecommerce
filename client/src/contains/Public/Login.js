@@ -8,6 +8,7 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slices/userSlice";
+import { validate } from "../../ultils/func";
 
 function Login() {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ function Login() {
     password: "",
   });
 
+  const [invalidFields, setInvalidFields] = useState([]);
+
   const resetPayLoad = () => {
     setPayload({
       name: "",
@@ -27,8 +30,11 @@ function Login() {
       password: "",
     });
   };
+
   useEffect(() => {
     setSignIn(location?.state === null ? false : true);
+    resetPayLoad();
+    setInvalidFields([]);
   }, [location?.state]);
 
   const handleSignIn = () => {
@@ -71,11 +77,17 @@ function Login() {
   };
 
   const handelSubmit = useCallback(async () => {
-    if (signIn) {
-      // const response = await apiLogin(payload);
-      await mutation.mutate({ payload });
+    const { name, ...dataPayLoad } = payload;
 
-      // const response = data;
+    //VALIDATE
+    // const invalid =
+    //   signIn === false
+    //     ? validate(payload, setInvalidFields)
+    //     : validate(dataPayLoad, setInvalidFields);
+
+    // if (invalid === 0) {
+    if (signIn) {
+      await mutation.mutate({ payload });
     } else {
       const response = await UserService.apiRegister(payload);
       if (response.status === "OK") {
@@ -87,6 +99,7 @@ function Login() {
         Swal.fire("Oops", response.msg, "error");
       }
     }
+    // }
   }, [payload, signIn]);
 
   return (
@@ -98,22 +111,31 @@ function Login() {
         {signIn === false && (
           <InputForm
             label="Họ và tên"
-            type="name"
+            type="text"
+            nameKey="name"
             value={payload.name}
             setValue={setPayload}
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
           />
         )}
         <InputForm
           label="Số điện thoại"
-          type="phone"
+          type="text"
+          nameKey="phone"
           value={payload.phone}
           setValue={setPayload}
+          invalidFields={invalidFields}
+          setInvalidFields={setInvalidFields}
         />
         <InputForm
           label="Mật khẩu"
-          type="password"
+          type="text"
+          nameKey="password"
           value={payload.password}
           setValue={setPayload}
+          invalidFields={invalidFields}
+          setInvalidFields={setInvalidFields}
         />
         <Button
           text={signIn ? "Đăng nhập" : "Đăng ký"}

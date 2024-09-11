@@ -4,12 +4,13 @@ function Menu({ MenuUser = [] }) {
   return (
     <div className="min-w-40 bg-white py-4 px-5 shadow-xl rounded-md">
       {MenuUser &&
-        MenuUser.map((item) => (
+        MenuUser.map((item, index) => (
           <MenuItem
+            key={index}
             data={item}
             onClick={() => {
-              if (item.ok) {
-                item.ok();
+              if (item?.separate) {
+                item.separate();
               }
             }}
           />

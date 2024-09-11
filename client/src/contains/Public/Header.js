@@ -8,12 +8,27 @@ import { FaPenNib, FaRegListAlt, FaWallet, FaHistory } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
+import * as UserService from "../../services/auth";
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slices/userSlice";
+import Swal from "sweetalert2";
 function Header() {
   const user1 = useSelector((state) => state.user.currentUser);
-  console.log("user1 ", user1);
+
   const [openMenu, setOpenMenu] = useState(false);
   const [user, setUser] = useState(user1 ? true : false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogOut = async () => {
+    const res = await UserService.logOutUser();
+    localStorage.removeItem("access_token");
+    await dispatch(resetUser());
+    Swal.fire("Congratulation", res.msg, "success").then(() => {
+      navigate("/");
+    });
+  };
+
   const goToLogin = useCallback((flag) => {
     navigate("/login", { state: flag });
   }, []);
@@ -45,7 +60,7 @@ function Header() {
     {
       title: "Đăng xuất",
       icon: <RiLogoutBoxRLine />,
-      separate: true,
+      separate: handleLogOut,
     },
   ];
 

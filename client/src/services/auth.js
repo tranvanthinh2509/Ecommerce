@@ -1,38 +1,25 @@
-import axiosConfig from "../axiosConfig";
 import axios from "axios";
 
 export const axiosJWT = axios.create();
 
-export const apiRegister = (payload) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const response = await axiosConfig({
-        method: "post",
-        url: "/api/user/sign-up",
-        data: payload,
-      });
-      resolve(response.data);
-    } catch (error) {
-      reject(error);
-    }
-  });
+export const apiRegister = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_SERVER_URL}/api/user/sign-up`,
+    data
+  );
+  return res.data;
+};
 
-export const apiLogin = (payload) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const response = await axiosConfig({
-        method: "post",
-        url: "/api/user/sign-in",
-        data: payload,
-      });
-      resolve(response.data);
-    } catch (error) {
-      reject(error);
-    }
-  });
+export const apiLogin = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_SERVER_URL}/api/user/sign-in`,
+    data
+  );
+  return res.data;
+};
 
 export const getDetailUser = async (id, access_token) => {
-  const res = await axios.get(
+  const res = await axiosJWT.get(
     `${process.env.REACT_APP_SERVER_URL}/api/user/detail-user/${id}`,
     {
       headers: {
@@ -53,10 +40,9 @@ export const refreshToken = async () => {
   return res.data;
 };
 
-// export const apiLogin = async (data) => {
-//   const res = await axios.post(
-//     `${process.env.REACT_APP_SERVER_URL}/api/user/sign-in`,
-//     data
-//   );
-//   return res.data;
-// };
+export const logOutUser = async () => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_SERVER_URL}/api/user/log-out`
+  );
+  return res.data;
+};
