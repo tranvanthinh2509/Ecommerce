@@ -8,7 +8,9 @@ const {
 
 router.post("/sign-up", userController.registerUser);
 router.post("/sign-in", userController.signInUser);
+router.post("/log-out", userController.logOutUser);
 router.get("/detail-user/:id", authUserMiddleWare, userController.detailUser);
 router.post("/refresh-token", userController.refreshToken);
+router.post("/sendCodeSMS", userController.sendVerificationCode);
 
 module.exports = router;

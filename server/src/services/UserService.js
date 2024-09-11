@@ -87,8 +87,6 @@ const detailUser = (id) => {
         where: { id: id },
       });
 
-      console.log("user ", user?.dataValues);
-
       resolve({
         status: user?.dataValues ? "OK" : "ERR",
         data: user?.dataValues || null,
