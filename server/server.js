@@ -5,6 +5,9 @@ const initRoutes = require("./src/routes");
 const connectDatabase = require("./src/config/connectDatabase");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+// const generateCode = require("./src/utils/generateCode");
+
+// console.log("generate code ", generateCode.generateCode(4)); //
 
 const app = express();
 app.use(
