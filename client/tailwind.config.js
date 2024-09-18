@@ -28,7 +28,7 @@ module.exports = {
       },
       colors: {
         secondary1: "#1266dd",
-        "[-red]": "#f60",
+        "[-red]": "#f73859",
       },
       borderRadius: {
         "[-50]": "50%",
