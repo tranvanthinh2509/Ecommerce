@@ -12,6 +12,16 @@ function Navigation() {
   return (
     <div className="w-screen  bg-secondary1 text-white flex justify-center">
       <div className="w-1100 flex">
+        <NavLink
+          to={"/"}
+          className={({ isActive }) => {
+            return `px-3 h-10 flex items-center  text-[-14] font-bold ${
+              isActive === true && "bg-[-red]"
+            } hover:bg-[-red]`;
+          }}
+        >
+          Trang chủ
+        </NavLink>
         {category?.data.map((item) => (
           <NavLink
             to={formatVietnameseToString(item.value)}
@@ -28,6 +38,5 @@ function Navigation() {
     </div>
   );
 }
-// px-3 h-10 flex items-center  text-[-14] font-bold ${{isActive} === true && "bg-[-red]"} hover:bg-[-red]
 
 export default Navigation;
