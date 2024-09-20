@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
 import { Province } from "../../components";
+import List from "./List";
 
 function Rental() {
   const location = useLocation();
@@ -29,6 +30,12 @@ function Rental() {
         <p className="text-[text]">{categoryCurrent?.subheader}</p>
       </div>
       <Province />
+      <div className="mt-5 w-full flex gap-3">
+        <div className="w-2/3">
+          <List />
+        </div>
+        <div className="w-1/3">right</div>
+      </div>
     </div>
   );
 }

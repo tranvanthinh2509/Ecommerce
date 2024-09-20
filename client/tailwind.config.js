@@ -7,10 +7,12 @@ module.exports = {
         1100: "1100px",
         "[240]": "240px",
         600: "600px",
+        "[280]": "280px",
       },
       height: {
         "[70]": "70px",
         "[45]": "45px",
+        "[240]": "240px",
       },
       backgroundColor: {
         primary: "#F5F5F5",
