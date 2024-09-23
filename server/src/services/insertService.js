@@ -5,7 +5,7 @@ const chothuecanho = require("../../data/chothuecanho.json");
 const chothuematbang = require("../../data/chothuematbang.json");
 const chothuephongtro = require("../../data/chothuephongtro.json");
 const nhachothue = require("../../data/nhachothue.json");
-const dataBody = nhachothue.body;
+const dataBody = chothuecanho.body;
 import { v4 } from "uuid";
 require("dotenv").config();
 const hashPassword = (password) =>
@@ -28,7 +28,7 @@ const insert = () => {
           labelCode,
           address: item?.header?.address,
           attributesId,
-          categoryCode: "NCT",
+          categoryCode: "CTCH",
           description: JSON.stringify(item?.mainContent?.content),
           userId,
           overviewId,
