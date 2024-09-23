@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Home, Login, Rental } from "./contains/Public";
+import { Home, HomePage, Login, Rental } from "./contains/Public";
 import { path } from "./ultils/constant";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -59,7 +59,7 @@ function App() {
   );
 
   return (
-    <div className="h-screen w-screen bg-primary">
+    <div className="min-h-screen h-full w-screen bg-primary">
       <Routes>
         {/* <Route path={path.Home} element={<Home />}></Route>
         <Route path={path.Login} element={<Login />} /> */}
@@ -69,6 +69,7 @@ function App() {
           <Route path={path.CTPT} element={<Rental />} />
           <Route path={path.CTMB} element={<Rental />} />
           <Route path={path.NCT} element={<Rental />} />
+          <Route path={path.Home} element={<HomePage />} />
         </Route>
       </Routes>
     </div>

@@ -4,3 +4,4 @@ export { default as Login } from "./Login";
 export { default as Navigation } from "./Navigation";
 export { default as Rental } from "./Rental";
 export { default as List } from "./List";
+export { default as HomePage } from "./HomePage";

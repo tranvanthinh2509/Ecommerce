@@ -1,45 +1,66 @@
 import Image from "./Image";
 import { GrStar } from "react-icons/gr";
-function Item() {
+const indexs = [0, 1, 2, 3];
+function Item({
+  image,
+  title,
+  description,
+  price,
+  acreage,
+  address,
+  star,
+  name,
+  phone,
+  zalo,
+}) {
   const handleStar = (star) => {
     let stars = [];
     for (let i = 1; i <= +star; i++)
       stars.push(<GrStar className="star-item" size={18} color="yellow" />);
     return stars;
   };
+  // const object = image.map((item) => ({ item }));
+  // console.log(
+  //   "imgae ",
+  //   image
+  //     .filter((i, index) => indexs.some((i) => i === index))
+  //     ?.map((i, index) => {
+  //       return i;
+  //     })
+  // );
+
   return (
     <div className="w-full flex items-start gap-2 px-5 py-3 border-y border-y-red-500">
-      <div className="w-2/5">
-        <Image
-          src="https://vinhomecoloa.com/wp-content/uploads/2021/11/gia-nha-vinhomes-ha-noi-bao-nhieu-tien.jpg"
-          className="w-[280] h-[240] object-cover"
-        />
+      <div className="w-2/5 relative">
+        <div className="relative">
+          <Image src={image[1]} className="w-[280] h-[240] object-cover" />
+          <div className="absolute left-1 bottom-2 text-white bg-black bg-opacity-70 px-2 text-[-14]">
+            {image.length} ảnh
+          </div>
+        </div>
       </div>
       <div className="w-3/5">
         <div className="flex w-full">
-          <div className="text-red-600 font-medium h-12 overflow-hidden text-ellipsis">
-            <span className="">
-              GẦN TRƯỜNG GTVT, NGOẠI THƯƠNG, HUTECH, HỒNG BÀNG, UEF - AN
-              NINH,TIỆN NGHI - TT Q.BÌNH THẠNH ĐƯỜNG UNG VĂN KHIÊM
-            </span>
+          <div className="text-red-600 font-medium overflow-hidden line-clamp-3">
+            <span className="">{title}</span>
           </div>
         </div>
         <div className="flex justify-between items-center my-2">
           <div>
             <div className="flex items-center gap-3">
-              <p className="font-bold text-green-600">4.5 triệu/tháng</p>
-              <p>30m2</p>
+              <p className="font-bold text-green-600">{price}</p>
+              <p>{acreage}</p>
             </div>
-            <p>Thành phố đà nẵng</p>
+            <p>{address}</p>
           </div>
           <p className="flex">
-            {handleStar(+5).length > 0 &&
-              handleStar(+5).map((star, number) => {
+            {handleStar(+{ star }).length > 0 &&
+              handleStar(+{ star }).map((star, number) => {
                 return <span key={number}>{star}</span>;
               })}
           </p>
         </div>
-        <p className="text-gray-500 w-full h-[50px]  text-ellipsis overflow-hidden ">
+        <p className="text-gray-500 w-full h-[50px] overflow-hidden line-clamp-2 ">
           - Để đảm bảo an ninh cho Sinh Viên ở Ngõ Sen giờ hoạt động từ 6h - 24h
           (không có giờ tự do), ra vào cổng bằng khóa vân tay. - Đ/c: Ngõ Sen
           97/15, Ung Văn Khiêm, Phường 25, Bình Thạnh (vào hẻm 97 Ung Văn Khiêm
@@ -61,13 +82,27 @@ function Item() {
           hotline: 0909814679 (Chị Ánh), 0909281128 (Chị Ly) Chính chủ cho thuê,
           không qua trung gian. Clip video phòng giá 6tr5
         </p>
-        <div>
-          <div className="flex items-center gap-2 ">
+        <div className="my-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 flex-1 w-2/5">
             <Image
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb-NGEQDekk2BwsllLjk4tcIM_BPIzXECdsg&s"
               className="w-8 h-8 object-cover rounded-[-50]"
             />
-            <span>Ronaldo</span>
+            <span className="text-gray-500">{name}</span>
+          </div>
+          <div className="flex items-center gap-1 ">
+            <button
+              type="button"
+              className="bg-blue-700 text-white p-1 rounded-md"
+            >
+              {`Gọi ${phone}`}
+            </button>
+            <button
+              type="button"
+              className="text-blue-700 px-1 rounded-md border border-blue-700"
+            >
+              Nhắn zalo
+            </button>
           </div>
         </div>
       </div>
