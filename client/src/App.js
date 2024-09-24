@@ -59,7 +59,7 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen h-full w-screen bg-primary">
+    <div className="min-h-screen h-full w-full bg-primary">
       <Routes>
         {/* <Route path={path.Home} element={<Home />}></Route>
         <Route path={path.Login} element={<Login />} /> */}

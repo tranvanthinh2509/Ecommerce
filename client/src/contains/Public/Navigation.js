@@ -10,7 +10,7 @@ function Navigation() {
   });
 
   return (
-    <div className="w-screen  bg-secondary1 text-white flex justify-center">
+    <div className="w-full  bg-secondary1 text-white flex justify-center">
       <div className="w-1100 flex">
         <NavLink
           to={"/"}

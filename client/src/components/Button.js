@@ -6,13 +6,16 @@ function Button({
   fullWidth,
   icBefore,
   icAfter,
+  active,
 }) {
   return (
     <button
       type="button"
       className={`py-2 px-4 ${textColor} ${bgColor} ${
         fullWidth && "w-full"
-      } outline-none rounded-md gap-1 flex items-center justify-center text-[-16]`}
+      } outline-none rounded-md gap-1 flex items-center justify-center text-[-16] ${
+        active ? "underline" : ""
+      }`}
       onClick={onClick}
     >
       {icBefore && <span>{icBefore}</span>}

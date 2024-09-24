@@ -8,11 +8,13 @@ module.exports = {
         "[240]": "240px",
         600: "600px",
         "[280]": "280px",
+        "[39]": "39px",
       },
       height: {
         "[70]": "70px",
         "[45]": "45px",
         "[240]": "240px",
+        "[39]": "39px",
       },
       backgroundColor: {
         primary: "#F5F5F5",

@@ -8,7 +8,7 @@ const Pagination = ({ total, sizePage, page, setPage }) => {
   const pagination = usePagination(total, page, sizePage);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 items-center">
       {page !== 1 && (
         <div
           onClick={() => setPage(page - 1)}
@@ -21,12 +21,12 @@ const Pagination = ({ total, sizePage, page, setPage }) => {
         return (
           <div
             onClick={() => {
-              setPage(item);
+              if (item !== "...") setPage(item);
             }}
             key={index}
             className={`w-[37px] h-[37px] flex items-center justify-center border border-gray-300 rounded-md cursor-pointer   ${
-              page - 1 === index
-                ? "bg-[-primary] font-medium hover:bg-opacity-60"
+              page === item
+                ? "bg-red-500 w-[39px] h-[39px] text-white font-medium hover:bg-opacity-60"
                 : "hover:bg-[#DEE2E6]"
             }`}
           >
