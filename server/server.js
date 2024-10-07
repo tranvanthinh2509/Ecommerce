@@ -7,7 +7,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 // const generateCode = require("./src/utils/generateCode");
 
-// console.log("generate code ", generateCode.generateCode(4)); //
+// console.log("generate code ", generateCode.generateCode(4));
+// console.log("generate code ", generateCode.generateCode23("duoi triệu"));
 
 const app = express();
 app.use(

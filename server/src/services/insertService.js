@@ -1,11 +1,13 @@
 const db = require("../models");
 const bcrypt = require("bcrypt");
-const { generateCode } = require("../utils/generateCode");
+const { generateCode, generateCodeData } = require("../utils/generateCode");
 const chothuecanho = require("../../data/chothuecanho.json");
 const chothuematbang = require("../../data/chothuematbang.json");
 const chothuephongtro = require("../../data/chothuephongtro.json");
 const nhachothue = require("../../data/nhachothue.json");
 const dataBody = chothuecanho.body;
+const { dataArea, dataPrice } = require("../utils/data");
+const { getNumberFromString } = require("../utils/common");
 import { v4 } from "uuid";
 require("dotenv").config();
 const hashPassword = (password) =>
@@ -21,6 +23,11 @@ const insert = () => {
         let userId = v4();
         let overviewId = v4();
         let imagesId = v4();
+
+        let priceCurrent = getNumberFromString(item?.header?.attributes?.price);
+        let areaCurrent = getNumberFromString(
+          item?.header?.attributes?.acreage
+        );
         await db.Post.create({
           id: postId,
           title: item?.header?.title,
@@ -33,6 +40,12 @@ const insert = () => {
           userId,
           overviewId,
           imagesId,
+          priceCode: dataPrice.find(
+            (item) => item.max > priceCurrent && item.min <= priceCurrent
+          )?.code,
+          areaCode: dataArea.find(
+            (item) => item.max > areaCurrent && item.min <= areaCurrent
+          )?.code,
         });
 
         await db.Attribute.create({
@@ -91,6 +104,31 @@ const insert = () => {
     }
   });
 };
+
+// createPricesAndAreas
+// const insert = () => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       dataPrice.forEach(async (item, index) => {
+//         await db.Price.create({
+//           code: generateCodeData(item.value),
+//           value: item.value,
+//           order: index + 1,
+//         });
+//       });
+//       dataArea.forEach(async (item, index) => {
+//         await db.Area.create({
+//           code: generateCodeData(item.value),
+//           value: item.value,
+//           order: index + 1,
+//         });
+//       });
+//       resolve("OK");
+//     } catch (err) {
+//       reject(err);
+//     }
+//   });
+// };
 
 module.exports = {
   insert,

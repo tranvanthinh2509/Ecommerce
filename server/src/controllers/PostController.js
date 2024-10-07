@@ -3,10 +3,16 @@ const PostService = require("../services/PostService");
 
 const getAllPost = async (req, res) => {
   try {
-    const { page, priceNumber = null, areaNumber = null } = req.query;
+    const {
+      page,
+      priceNumber = null,
+      areaNumber = null,
+      filter = null,
+    } = req.query;
     const response = await PostService.getAllPost(page, {
       priceNumber,
       areaNumber,
+      filter,
     });
     return res.status(200).json(response);
   } catch (error) {
@@ -19,15 +25,16 @@ const getLimitPost = async (req, res) => {
   try {
     const {
       page,
-      orderby,
       priceNumber = null,
       areaNumber = null,
+      filter = null,
       ...query
     } = req.query;
 
-    const response = await PostService.getLimitPost(page, orderby, query, {
+    const response = await PostService.getLimitPost(page, query, {
       priceNumber,
       areaNumber,
+      filter,
     });
     return res.status(200).json(response);
   } catch (error) {

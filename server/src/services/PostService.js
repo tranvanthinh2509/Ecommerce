@@ -1,15 +1,19 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 
-const getAllPost = (page, { priceNumber, areaNumber }) => {
+const getAllPost = (page, { priceNumber, areaNumber, filter }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let order;
+      if (filter === "default") {
+        order = [["createdAt", "ASC"]];
+      } else {
+        order = [["createdAt", "DESC"]];
+      }
       let offset = !page || +page <= 1 ? 0 : +page - 1;
       if (priceNumber) queries.price = { [Op.between]: priceNumber };
       if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
       const posts = await db.Post.findAndCountAll({
-        raw: true,
-        nest: true,
         offset: offset * +process.env.LIMIT,
         limit: +process.env.LIMIT,
         include: [
@@ -22,6 +26,7 @@ const getAllPost = (page, { priceNumber, areaNumber }) => {
           { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
         ],
         attributes: ["id", "title", "star", "address", "description"],
+        order,
       });
       resolve({
         status: posts ? "OK" : "ERR",
@@ -35,21 +40,26 @@ const getAllPost = (page, { priceNumber, areaNumber }) => {
   });
 };
 
-const getLimitPost = (page, orderby, query, { priceNumber, areaNumber }) => {
+const getLimitPost = (page, query, { priceNumber, areaNumber, filter }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let order;
+      if (filter === "default") {
+        order = [["createdAt", "ASC"]];
+      } else {
+        order = [["createdAt", "DESC"]];
+      }
       let offset = !page || +page <= 1 ? 0 : +page - 1;
-      const queries = { ...query };
       if (priceNumber) queries.price = { [Op.between]: priceNumber };
       if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
-      let posts;
+      const queries = query;
 
-      posts = await db.Post.findAndCountAll({
-        raw: true,
-        nest: true,
+      const posts = await db.Post.findAndCountAll({
         offset: offset * +process.env.LIMIT,
         limit: +process.env.LIMIT,
-        where: queries,
+
+        where: { ...queries },
+        attributes: ["id", "title", "star", "address", "description"],
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
           {
@@ -57,13 +67,9 @@ const getLimitPost = (page, orderby, query, { priceNumber, areaNumber }) => {
             as: "attributes",
             attributes: ["price", "acreage", "published", "hastag"],
           },
-          {
-            model: db.User,
-            as: "user",
-            attributes: ["name", "zalo", "phone"],
-          },
+          { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
         ],
-        attributes: ["id", "title", "star", "address", "description"],
+        order,
       });
 
       resolve({
