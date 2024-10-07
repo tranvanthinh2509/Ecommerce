@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { ItemSidebar } from "../../components";
-
+import * as PriceService from "../../services/price";
+import * as AreaService from "../../services/area";
+import { useMutationHooks } from "../../hooks/useMutationHook";
 function SearchDetail() {
   const prices = [
     {
@@ -48,10 +51,30 @@ function SearchDetail() {
       price: "Trên 90 m2",
     },
   ];
+
+  const [dataPrice, setDataPrice] = useState();
+  const [dataArea, setDataArea] = useState();
+
+  const mutationPrice = useMutationHooks(async () => {
+    const res = await PriceService.getAllPrice();
+    setDataPrice(res.data);
+  });
+
+  const mutationArea = useMutationHooks(async () => {
+    const res = await AreaService.getAllArea();
+    setDataArea(res.data);
+  });
+  useEffect(() => {
+    mutationPrice.mutate();
+    mutationArea.mutate();
+  }, []);
+
+  console.log(dataArea);
+  console.log(dataArea);
   return (
     <div className="flex flex-col gap-5">
-      <ItemSidebar prices={prices} title="Xem theo giá" />
-      <ItemSidebar prices={dientich} title="Xem theo diện tích" />
+      <ItemSidebar content={dataPrice} title="Xem theo giá" />
+      <ItemSidebar content={dataArea} title="Xem theo diện tích" />
     </div>
   );
 }

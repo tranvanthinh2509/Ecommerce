@@ -18,23 +18,35 @@ function List({ code }) {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(8);
   const [type, setType] = useState(true);
-  const [selected, setSelected] = useState("mac-đinh");
+  const [selected, setSelected] = useState("default");
+  const [checkSelected, setCheckSelected] = useState(false);
+  const [pathName, setPathName] = useState(category.search);
 
   const mutationGetLimitPost = useMutationHooks(async (data) => {
-    const { code, page } = data;
+    const { code, page, filter } = data;
 
     let res;
     if (code === "home") {
-      res = await PostService.getAllPost(code, page);
+      res = await PostService.getAllPost(code, page, filter);
     } else {
       res = await PostService.getLimitPost(code, page);
     }
     setDataPost(res.data);
   });
 
+  // console.log(category);
   useEffect(() => {
-    mutationGetLimitPost.mutate({ code: code, page: page });
-    if (page !== 1 || selected !== "mac-dinh")
+    // console.log("123 453", pathName);
+    if (category.search === "") {
+      setCheckSelected(false);
+      setSelected("default");
+      setType(true);
+    }
+  }, [category]);
+
+  useEffect(() => {
+    mutationGetLimitPost.mutate({ code: code, page: page, filter: selected });
+    if (page !== 1 || checkSelected === true)
       navigate({
         pathname: `${category.pathname}`,
         search: createSearchParams({
@@ -43,17 +55,20 @@ function List({ code }) {
         }).toString(),
       });
   }, [code, page, selected]);
+
   useEffect(() => {
     setPage(1);
   }, [code]);
 
-  const handleLatest = (e) => {
+  const handleLatest = () => {
     setType(false);
-    setSelected(formatVietnameseToString(e.target.innerText));
+    setSelected("latest");
+    setCheckSelected(true);
   };
-  const handleDefaut = (e) => {
+  const handleDefaut = () => {
     setType(true);
-    setSelected(formatVietnameseToString(e.target.innerText));
+    setSelected("default");
+    setCheckSelected(true);
   };
   return (
     <div className="w-full bg-white rounded-lg border border-gray-300">
@@ -65,7 +80,7 @@ function List({ code }) {
             bgColor="bg-gray-200"
             text="Mặc định"
             active={type}
-            onClick={(e) => handleDefaut(e)}
+            onClick={() => handleDefaut()}
           />
           <Button
             bgColor="bg-gray-200"
@@ -80,13 +95,13 @@ function List({ code }) {
           dataPost?.rows.map((item) => {
             return (
               <Item
-                title={item.title}
-                price={item.attributes.price}
-                acreage={item.attributes.acreage}
-                star={item.star}
-                name={item.user.name}
-                phone={item.user.phone}
-                address={item.address}
+                title={item?.title}
+                price={item?.attributes?.price}
+                acreage={item?.attributes?.acreage}
+                star={item?.star}
+                name={item?.user?.name}
+                phone={item?.user?.phone}
+                address={item?.address}
                 image={JSON.parse(item?.images?.image)}
               />
             );

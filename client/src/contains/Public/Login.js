@@ -19,6 +19,7 @@ function Login() {
     name: "",
     phone: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [invalidFields, setInvalidFields] = useState([]);
@@ -28,6 +29,7 @@ function Login() {
       name: "",
       phone: "",
       password: "",
+      confirmPassword: "",
     });
   };
 
@@ -77,29 +79,29 @@ function Login() {
   };
 
   const handelSubmit = useCallback(async () => {
-    const { name, ...dataPayLoad } = payload;
+    const { name, confirmPassword, ...dataPayLoad } = payload;
 
     //VALIDATE
-    // const invalid =
-    //   signIn === false
-    //     ? validate(payload, setInvalidFields)
-    //     : validate(dataPayLoad, setInvalidFields);
+    const invalid =
+      signIn === false
+        ? validate(payload, setInvalidFields)
+        : validate(dataPayLoad, setInvalidFields);
 
-    // if (invalid === 0) {
-    if (signIn) {
-      await mutation.mutate({ payload });
-    } else {
-      const response = await UserService.apiRegister(payload);
-      if (response.status === "OK") {
-        Swal.fire("Congratulation", response.msg, "success").then(() => {
-          setSignIn(true);
-          resetPayLoad();
-        });
+    if (invalid === 0) {
+      if (signIn) {
+        await mutation.mutate({ payload });
       } else {
-        Swal.fire("Oops", response.msg, "error");
+        const response = await UserService.apiRegister(payload);
+        if (response.status === "OK") {
+          Swal.fire("Congratulation", response.msg, "success").then(() => {
+            setSignIn(true);
+            resetPayLoad();
+          });
+        } else {
+          Swal.fire("Oops", response.msg, "error");
+        }
       }
     }
-    // }
   }, [payload, signIn]);
 
   return (
@@ -137,6 +139,17 @@ function Login() {
           invalidFields={invalidFields}
           setInvalidFields={setInvalidFields}
         />
+        {signIn === false && (
+          <InputForm
+            label="Xác nhận mật khẩu"
+            type="text"
+            nameKey="confirmPassword"
+            value={payload.confirmPassword}
+            setValue={setPayload}
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
+          />
+        )}
         <Button
           text={signIn ? "Đăng nhập" : "Đăng ký"}
           bgColor="bg-secondary1"

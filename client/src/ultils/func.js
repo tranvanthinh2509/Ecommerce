@@ -16,11 +16,14 @@ export const validate = (payload, setInvalidFields) => {
       invalids++;
       setInvalidFields((prev) => [
         ...prev,
-        { name: arr[0], mes: "Require this field " },
+        { name: arr[0], mes: "Không thể để trống" },
       ]);
     }
   }
 
+  console.log(formatPayload);
+
+  let pass;
   for (let arr of formatPayload) {
     switch (arr[0]) {
       case "phone":
@@ -29,7 +32,7 @@ export const validate = (payload, setInvalidFields) => {
           invalids++;
           setInvalidFields((prev) => [
             ...prev,
-            { name: arr[0], mes: "Phone invalid " },
+            { name: arr[0], mes: "Sai định dạng số điện thoại VN" },
           ]);
         }
         break;
@@ -38,10 +41,22 @@ export const validate = (payload, setInvalidFields) => {
           invalids++;
           setInvalidFields((prev) => [
             ...prev,
-            { name: arr[0], mes: "Password minimum 6 charaters " },
+            { name: arr[0], mes: "Mật khẩu ít nhất 6 kí tự" },
+          ]);
+        } else {
+          pass = arr[1];
+        }
+        break;
+      case "confirmPassword":
+        if (arr[1] !== pass) {
+          invalids++;
+          setInvalidFields((prev) => [
+            ...prev,
+            { name: arr[0], mes: "Không giống mật khẩu" },
           ]);
         }
         break;
+
       default:
         break;
     }
