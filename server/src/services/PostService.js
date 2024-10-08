@@ -1,7 +1,10 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 
-const getAllPost = (page, { priceNumber, areaNumber, filter }) => {
+const getAllPost = (
+  page,
+  { priceNumber, areaNumber, filter, priceCode, areaCode }
+) => {
   return new Promise(async (resolve, reject) => {
     try {
       let order;
@@ -10,12 +13,20 @@ const getAllPost = (page, { priceNumber, areaNumber, filter }) => {
       } else {
         order = [["createdAt", "DESC"]];
       }
+
+      let queries = {};
+
       let offset = !page || +page <= 1 ? 0 : +page - 1;
-      if (priceNumber) queries.price = { [Op.between]: priceNumber };
-      if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
+      // if (priceNumber) queries.price = { [Op.between]: priceNumber };
+      // if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
+      if (priceCode && priceCode !== "null") queries.priceCode = priceCode;
+      if (areaCode && areaCode !== "null") queries.areaCode = areaCode;
+      // console.log("querri ", queries);
       const posts = await db.Post.findAndCountAll({
+        where: queries,
         offset: offset * +process.env.LIMIT,
         limit: +process.env.LIMIT,
+
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
           {

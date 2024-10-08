@@ -7,11 +7,15 @@ const getAllPost = async (req, res) => {
       page,
       priceNumber = null,
       areaNumber = null,
+      priceCode = null,
+      areaCode = null,
       filter = null,
     } = req.query;
     const response = await PostService.getAllPost(page, {
       priceNumber,
       areaNumber,
+      priceCode,
+      areaCode,
       filter,
     });
     return res.status(200).json(response);
