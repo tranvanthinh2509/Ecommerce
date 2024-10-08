@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
 import { Province } from "../../components";
 import List from "./List";
-import SearchDetail from "./SearchDetail";
+import Sidebar from "./Sidebar";
 
 function HomePage() {
   return (
@@ -23,7 +23,7 @@ function HomePage() {
           <List code="home" />
         </div>
         <div className="w-1/3">
-          <SearchDetail />
+          <Sidebar />
         </div>
       </div>
     </div>

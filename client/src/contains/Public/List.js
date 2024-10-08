@@ -8,10 +8,11 @@ import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseTo
 import {
   createSearchParams,
   useNavigate,
-  useParams,
   useLocation,
+  useSearchParams,
 } from "react-router-dom";
 function List({ code }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const category = useLocation();
   const [dataPost, setDataPost] = useState([]);
@@ -20,55 +21,102 @@ function List({ code }) {
   const [type, setType] = useState(true);
   const [selected, setSelected] = useState("default");
   const [checkSelected, setCheckSelected] = useState(false);
-  const [pathName, setPathName] = useState(category.search);
+  const [priceCode, setPriceCode] = useState();
+  const [areaCode, setAreaCode] = useState();
+
+  // taoj param cua thanh filter
+  const [paramsSearch] = useSearchParams();
+  let entries = paramsSearch.entries();
+  const append = (entries, item) => {
+    let params = [];
+    paramsSearch.append("order", item);
+    for (let entry of entries) {
+      params.push(entry);
+    }
+
+    let searchParamsObject = {};
+    params?.forEach((i) => {
+      if (
+        Object.keys(searchParamsObject)?.some(
+          (item) => item === i[0] && item !== "order"
+        )
+      ) {
+        searchParamsObject[i[0]] = [...searchParamsObject[i[0]], i[1]];
+      } else {
+        searchParamsObject = { ...searchParamsObject, [i[0]]: [i[1]] };
+      }
+    });
+    return searchParamsObject;
+  };
+
+  const handleChangePage = (item) => {
+    navigate({
+      pathname: `${category.pathname}`,
+      search: createSearchParams(append(entries, item)).toString(),
+    });
+  };
 
   const mutationGetLimitPost = useMutationHooks(async (data) => {
-    const { code, page, filter } = data;
+    const { code, page, filter, areaCode, priceCode } = data;
 
     let res;
     if (code === "home") {
-      res = await PostService.getAllPost(code, page, filter);
+      res = await PostService.getAllPost(
+        code,
+        page,
+        filter,
+        priceCode,
+        areaCode
+      );
     } else {
       res = await PostService.getLimitPost(code, page);
     }
     setDataPost(res.data);
   });
-
-  // console.log(category);
   useEffect(() => {
-    // console.log("123 453", pathName);
-    if (category.search === "") {
-      setCheckSelected(false);
-      setSelected("default");
-      setType(true);
+    let params = [];
+    for (let entry of searchParams.entries()) {
+      params.push(entry);
     }
-  }, [category]);
+
+    let searchParamsObject = {};
+    params?.forEach((i) => {
+      if (Object.keys(searchParamsObject)?.some((item) => item === i[0])) {
+        searchParamsObject[i[0]] = [...searchParamsObject[i[0]], i[1]];
+      } else {
+        searchParamsObject = { ...searchParamsObject, [i[0]]: [i[1]] };
+      }
+    });
+    setAreaCode(searchParamsObject?.areaCode?.[0]);
+    setPriceCode(searchParamsObject?.priceCode?.[0]);
+  }, [searchParams]);
 
   useEffect(() => {
-    mutationGetLimitPost.mutate({ code: code, page: page, filter: selected });
-    if (page !== 1 || checkSelected === true)
-      navigate({
-        pathname: `${category.pathname}`,
-        search: createSearchParams({
-          page: page,
-          orderby: selected,
-        }).toString(),
-      });
-  }, [code, page, selected]);
+    mutationGetLimitPost.mutate({
+      code: code,
+      page: page,
+      filter: selected,
+      areaCode,
+      priceCode,
+    });
+  }, [code, page, selected, priceCode, areaCode]);
 
   useEffect(() => {
     setPage(1);
-  }, [code]);
+    setType(true);
+  }, [code, priceCode, areaCode]);
 
   const handleLatest = () => {
     setType(false);
     setSelected("latest");
     setCheckSelected(true);
+    handleChangePage("latest");
   };
   const handleDefaut = () => {
     setType(true);
     setSelected("default");
     setCheckSelected(true);
+    handleChangePage("default");
   };
   return (
     <div className="w-full bg-white rounded-lg border border-gray-300">
@@ -86,7 +134,7 @@ function List({ code }) {
             bgColor="bg-gray-200"
             text="Mới nhất"
             active={!type}
-            onClick={handleLatest}
+            onClick={() => handleLatest()}
           />
         </div>
       </div>

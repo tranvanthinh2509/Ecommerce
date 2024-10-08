@@ -5,7 +5,7 @@ import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseTo
 import { Province } from "../../components";
 import List from "./List";
 import Panigation from "./Panigation";
-import SearchDetail from "./SearchDetail";
+import Sidebar from "./Sidebar";
 
 function Rental() {
   const location = useLocation();
@@ -38,7 +38,7 @@ function Rental() {
           <List code={categoryCode} />
         </div>
         <div className="w-1/3">
-          <SearchDetail />
+          <Sidebar />
         </div>
       </div>
     </div>

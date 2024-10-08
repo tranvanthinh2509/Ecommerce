@@ -38,6 +38,10 @@ module.exports = {
       borderRadius: {
         "[-50]": "50%",
       },
+      backgroundImage: {
+        "bg-contact":
+          "url('https://www.jotform.com/blog/wp-content/uploads/2020/05/work-from-home-featured-02.png')",
+      },
     },
   },
   plugins: [],

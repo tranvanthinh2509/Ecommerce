@@ -7,10 +7,15 @@ export const getLimitPost = async (code, page) => {
   return res.data;
 };
 
-export const getAllPost = async (code, page, filter) => {
-  console.log("123 ", page);
+export const getAllPost = async (
+  code,
+  page,
+  filter,
+  priceCode = null,
+  areaCode = null
+) => {
   const res = await axios.get(
-    `${process.env.REACT_APP_SERVER_URL}/api/post/getAllPost?page=${page}&filter=${filter}`
+    `${process.env.REACT_APP_SERVER_URL}/api/post/getAllPost?page=${page}&filter=${filter}&priceCode=${priceCode}&areaCode=${areaCode}`
   );
   return res.data;
 };
