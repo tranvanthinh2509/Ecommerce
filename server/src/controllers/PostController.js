@@ -49,9 +49,6 @@ const getLimitPost = async (req, res) => {
 };
 const getNewPost = async (req, res) => {
   try {
-    const { page, priceNumber = null, areaNumber = null, ...query } = req.query;
-
-    console.log(req.query);
     const response = await PostService.getNewPost();
     return res.status(200).json(response);
   } catch (error) {

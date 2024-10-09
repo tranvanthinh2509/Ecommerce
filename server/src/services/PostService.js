@@ -103,10 +103,8 @@ const getNewPost = () => {
       // if (priceNumber) queries.price = { [Op.between]: priceNumber };
       // if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
       const posts = await db.Post.findAll({
-        raw: true,
-        nest: true,
         // offset: offset * +process.env.LIMIT,
-        // limit: +process.env.LIMIT,
+        limit: +process.env.LIMIT,
         order: [["createdAt", "DESC"]],
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
@@ -117,10 +115,17 @@ const getNewPost = () => {
           },
           { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
         ],
-        attributes: ["id", "title", "star", "address", "description"],
+        attributes: [
+          "id",
+          "title",
+          "star",
+          "address",
+          "description",
+          "createdAt",
+        ],
       });
       resolve({
-        // status: posts ? "OK" : "ERR",
+        status: posts ? "OK" : "ERR",
         // limit: +process.env.limit,
         // page: offset + 1,
         data: posts,
