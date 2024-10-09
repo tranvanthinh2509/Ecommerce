@@ -19,3 +19,10 @@ export const getAllPost = async (
   );
   return res.data;
 };
+
+export const getNewPost = async () => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_SERVER_URL}/api/post/getNewPost`
+  );
+  return res.data;
+};

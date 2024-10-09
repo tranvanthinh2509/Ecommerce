@@ -5,6 +5,7 @@ import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseTo
 import { Province } from "../../components";
 import List from "./List";
 import Sidebar from "./Sidebar";
+import NewPost from "./NewPost";
 
 function HomePage() {
   return (
@@ -24,6 +25,7 @@ function HomePage() {
         </div>
         <div className="w-1/3">
           <Sidebar />
+          <NewPost />
         </div>
       </div>
     </div>

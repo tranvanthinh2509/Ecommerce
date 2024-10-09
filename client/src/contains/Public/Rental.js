@@ -6,6 +6,7 @@ import { Province } from "../../components";
 import List from "./List";
 import Panigation from "./Panigation";
 import Sidebar from "./Sidebar";
+import NewPost from "./NewPost";
 
 function Rental() {
   const location = useLocation();
@@ -23,8 +24,7 @@ function Rental() {
       setCategoryCode(category.code);
     }
   }, [location, categories]);
-  //   console.log("categori ", categoryCurrent);
-  // console.log("categori ", categoryCode);
+
   return (
     <div className="w-full flex flex-col">
       <div>
@@ -39,6 +39,7 @@ function Rental() {
         </div>
         <div className="w-1/3">
           <Sidebar />
+          <NewPost />
         </div>
       </div>
     </div>
