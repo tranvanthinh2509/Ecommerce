@@ -24,12 +24,22 @@ function Search() {
       icon: <PiPlaceholderLight />,
     },
   ];
+
+  const handleSearchItem = (title) => {
+    console.log(title);
+  };
   return (
     <div className="w-full flex justify-center mt-5 ">
       <div className="w-1100 bg-yellow-400 p-2.5 rounded-lg">
         <div className="flex justify-between items-center gap-3">
           {SearchData.map((item) => {
-            return <SearchItem title={item.title} icon={item.icon} />;
+            return (
+              <SearchItem
+                title={item.title}
+                icon={item.icon}
+                onClick={() => handleSearchItem(item.title)}
+              />
+            );
           })}
           <div className="flex-auto">
             <Button

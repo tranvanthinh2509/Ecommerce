@@ -9,12 +9,18 @@ module.exports = {
         600: "600px",
         "[280]": "280px",
         "[39]": "39px",
+        "[700]": "700px",
       },
       height: {
         "[70]": "70px",
         "[45]": "45px",
         "[240]": "240px",
         "[39]": "39px",
+        "[500]": "500px",
+        "option1 ": "calc(100% - 40px)",
+      },
+      maxHeight: {
+        "[500]": "500px",
       },
       backgroundColor: {
         primary: "#F5F5F5",
