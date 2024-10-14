@@ -1,23 +1,45 @@
 import { FaRegBuilding } from "react-icons/fa";
 import SelectSearchItem from "./SelectSearchItem";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import Button from "./Button";
+import { getCodes } from "../ultils/Common/getCodes";
 
-function SearchItem({ titleDefault, icon, data, name }) {
+function SearchItem({ titleDefault, icon, data, name, queries, handleSubmit }) {
   const [checkSelect, setCheckSelect] = useState(false);
-  const [queries, setQueries] = useState({
-    categories: "",
-    cities: "",
-    prices: "",
-    areas: "",
-  });
+
+  const [valueLeft, setValueLeft] = useState(0);
+  const [valueRight, setValueRight] = useState(name === "prices" ? 15 : 90);
 
   const handleCheckSelectOff = () => {
     setCheckSelect(false);
   };
 
-  const handleSubmit = (code) => {
-    setQueries((prev) => ({ ...prev, ...code }));
+  const handleSubmitCheckSelect = (code) => {
+    handleSubmit(code);
     setCheckSelect(false);
+  };
+
+  const handleSetValueLR = (value) => {
+    if (value.length === 2) {
+      setValueLeft(value[0]);
+      setValueRight(value[1]);
+    } else if (name === "prices") {
+      if (value[0] === 1) {
+        setValueLeft(0);
+        setValueRight(1);
+      } else {
+        setValueLeft(15);
+        setValueRight(15);
+      }
+    } else if (name === "areas") {
+      if (value[0] === 20) {
+        setValueLeft(0);
+        setValueRight(20);
+      } else {
+        setValueLeft(90);
+        setValueRight(90);
+      }
+    }
   };
 
   return (
@@ -29,9 +51,12 @@ function SearchItem({ titleDefault, icon, data, name }) {
           }}
           titleDefault={titleDefault}
           data={data}
-          handleSubmit={handleSubmit}
           name={name}
           queries={queries}
+          handleSubmit={handleSubmitCheckSelect}
+          valueLeft={valueLeft}
+          valueRight={valueRight}
+          handleSetValue={handleSetValueLR}
         />
       )}
 

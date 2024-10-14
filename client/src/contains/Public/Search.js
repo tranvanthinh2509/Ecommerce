@@ -6,22 +6,23 @@ import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 import { PiPlaceholderLight } from "react-icons/pi";
 import { Button } from "../../components";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as CityService from "../../services/city";
 import * as AreaService from "../../services/area";
 import * as PriceService from "../../services/price";
+import { getCode } from "../../ultils/Common/getCodes";
+
 function Search() {
   const [dataCate, setDataCate] = useState();
   const [dataCity, setDataCity] = useState();
   const [dataArea, setDataArea] = useState();
   const [dataPrice, setDataPrice] = useState();
-
+  const [queries, setQueries] = useState({});
   const SearchData = [
     {
       title: "Phòng trọ, nhà trọ",
       icon: <FaRegBuilding />,
       name: "categories",
-
       data: dataCate,
     },
     {
@@ -59,24 +60,30 @@ function Search() {
     queryFn: AreaService.getAllArea,
   });
   useEffect(() => {
-    // console.log("categories ", categories);
     setDataCate(categories?.data);
   }, [categories]);
 
   useEffect(() => {
-    // console.log("categories ", categories);
     setDataCity(city?.data);
   }, [city]);
 
   useEffect(() => {
-    // console.log("categories ", categories);
     setDataPrice(price?.data);
   }, [price]);
   useEffect(() => {
-    // console.log("categories ", categories);
     setDataArea(area?.data);
   }, [area]);
-  // console.log("data ", dataCate);
+
+  const handleSubmit = useCallback(
+    (code) => {
+      setQueries((prev) => ({ ...prev, ...code }));
+    },
+    [queries]
+  );
+
+  const handleSearch = () => {
+    console.log("123 ", queries);
+  };
 
   return (
     <div className="w-full flex justify-center mt-5 ">
@@ -89,6 +96,8 @@ function Search() {
                 name={item.name}
                 icon={item.icon}
                 data={item?.data}
+                queries={queries}
+                handleSubmit={handleSubmit}
               />
             );
           })}
@@ -99,6 +108,7 @@ function Search() {
               fullWidth={true}
               textColor="text-white font-semibold text-[14]"
               icBefore={<HiMiniMagnifyingGlass />}
+              onClick={handleSearch}
             />
           </div>
         </div>
