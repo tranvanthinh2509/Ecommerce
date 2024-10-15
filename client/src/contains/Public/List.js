@@ -57,19 +57,33 @@ function List({ code }) {
   };
 
   const mutationGetLimitPost = useMutationHooks(async (data) => {
-    const { code, page, filter, areaCode, priceCode } = data;
+    let { code, page, filter, areaCode, priceCode } = data;
 
     let res;
     if (code === "home") {
-      res = await PostService.getAllPost(
-        code,
+      // res = await PostService.getAllPost(
+      //   code,
+      //   page,
+      //   filter,
+      //   priceCode,
+      //   areaCode
+      // );
+
+      res = await PostService.getLimitPost(
+        (code = null),
         page,
         filter,
         priceCode,
         areaCode
       );
     } else {
-      res = await PostService.getLimitPost(code, page);
+      res = await PostService.getLimitPost(
+        code,
+        page,
+        filter,
+        priceCode,
+        areaCode
+      );
     }
     setDataPost(res.data);
   });

@@ -50,31 +50,52 @@ function SelectSearchItem({
           <div className="uppercase font-bold text-[-14]">{titleDefault}</div>
         </div>
         <div className="block py-2.5 px-6 h-[calc(100%-50px)]  ">
-          {(name === "categories" || name === "cities") &&
-            data?.map((item) => {
-              return (
-                <span className="flex items-center py-3 px-2.5 gap-3 text-[-18] font-bold border-b border-b-gray-200">
-                  <input
-                    type="radio"
-                    name={name}
-                    id={item?.code}
-                    value={item?.value}
-                    className="px-3 py-2.5"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubmit({
-                        [`${name}`]: item?.value,
-                        [`${name}Code`]: item?.code,
-                      });
-                    }}
-                    checked={
-                      item?.code === queries?.[`${name}Code`] ? true : false
-                    }
-                  />
-                  <label htmlFor={item?.code}>{item?.value}</label>
-                </span>
-              );
-            })}
+          {(name === "categories" || name === "cities") && (
+            <div>
+              <span className="flex items-center py-3 px-2.5 gap-3 text-[-18] font-bold border-b border-b-gray-200">
+                <input
+                  type="radio"
+                  name={name}
+                  id="default"
+                  value={titleDefault}
+                  className="px-3 py-2.5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSubmit({
+                      [`${name}`]: titleDefault,
+                      [`${name}Code`]: null,
+                    });
+                  }}
+                  checked={!queries?.[`${name}Code`] ? true : false}
+                />
+                <label htmlFor="default">{titleDefault}</label>
+              </span>
+              {data?.map((item) => {
+                return (
+                  <span className="flex items-center py-3 px-2.5 gap-3 text-[-18] font-bold border-b border-b-gray-200">
+                    <input
+                      type="radio"
+                      name={name}
+                      id={item?.code}
+                      value={item?.value}
+                      className="px-3 py-2.5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubmit({
+                          [`${name}`]: item?.value,
+                          [`${name}Code`]: item?.code,
+                        });
+                      }}
+                      checked={
+                        item?.code === queries?.[`${name}Code`] ? true : false
+                      }
+                    />
+                    <label htmlFor={item?.code}>{item?.value}</label>
+                  </span>
+                );
+              })}
+            </div>
+          )}
           {(name === "prices" || name === "areas") && (
             <div className="h-full grid grid-cols-1 content-between ">
               <div className="relative mt-4">

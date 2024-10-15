@@ -20,7 +20,7 @@ function Search() {
   const [queries, setQueries] = useState({});
   const SearchData = [
     {
-      title: "Phòng trọ, nhà trọ",
+      title: "Tìm tất cả",
       icon: <FaRegBuilding />,
       name: "categories",
       data: dataCate,
@@ -82,7 +82,15 @@ function Search() {
   );
 
   const handleSearch = () => {
-    console.log("123 ", queries);
+    const queryCodes = Object.entries(queries).filter((item) =>
+      item[0].includes("Code")
+    );
+    let queryCodeObj = {};
+    queryCodes.forEach((item) => {
+      queryCodeObj[item[0]] = item[1];
+    });
+
+    console.log("123 ", queryCodeObj);
   };
 
   return (
