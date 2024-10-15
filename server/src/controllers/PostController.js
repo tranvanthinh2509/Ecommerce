@@ -29,15 +29,23 @@ const getLimitPost = async (req, res) => {
   try {
     const {
       page,
+      categoryCode = null,
       priceNumber = null,
       areaNumber = null,
+      priceCode = null,
+      areaCode = null,
+      cityCode = null,
       filter = null,
-      ...query
     } = req.query;
+    console.log("123 ", req.query);
 
-    const response = await PostService.getLimitPost(page, query, {
+    const response = await PostService.getLimitPost(page, {
+      categoryCode,
       priceNumber,
       areaNumber,
+      priceCode,
+      areaCode,
+      cityCode,
       filter,
     });
     return res.status(200).json(response);

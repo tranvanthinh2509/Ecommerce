@@ -51,7 +51,18 @@ const getAllPost = (
   });
 };
 
-const getLimitPost = (page, query, { priceNumber, areaNumber, filter }) => {
+const getLimitPost = (
+  page,
+  {
+    categoryCode,
+    priceNumber,
+    areaNumber,
+    filter,
+    priceCode,
+    areaCode,
+    cityCode,
+  }
+) => {
   return new Promise(async (resolve, reject) => {
     try {
       let order;
@@ -60,16 +71,23 @@ const getLimitPost = (page, query, { priceNumber, areaNumber, filter }) => {
       } else {
         order = [["createdAt", "DESC"]];
       }
+
+      let queries = {};
+
       let offset = !page || +page <= 1 ? 0 : +page - 1;
-      if (priceNumber) queries.price = { [Op.between]: priceNumber };
-      if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
-      const queries = query;
+      // if (priceNumber) queries.price = { [Op.between]: priceNumber };
+      // if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
+      if (categoryCode && categoryCode !== "null")
+        queries.categoryCode = categoryCode;
+      if (priceCode && priceCode !== "null") queries.priceCode = priceCode;
+      if (areaCode && areaCode !== "null") queries.areaCode = areaCode;
+      if (cityCode && cityCode !== "null") queries.cityCode = cityCode;
 
       const posts = await db.Post.findAndCountAll({
         offset: offset * +process.env.LIMIT,
         limit: +process.env.LIMIT,
 
-        where: { ...queries },
+        where: queries,
         attributes: ["id", "title", "star", "address", "description"],
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
