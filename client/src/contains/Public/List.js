@@ -87,6 +87,7 @@ function List({ code }) {
     }
     setDataPost(res.data);
   });
+
   useEffect(() => {
     let params = [];
     for (let entry of searchParams.entries()) {
@@ -101,9 +102,15 @@ function List({ code }) {
         searchParamsObject = { ...searchParamsObject, [i[0]]: [i[1]] };
       }
     });
+
     setAreaCode(searchParamsObject?.areaCode?.[0]);
     setPriceCode(searchParamsObject?.priceCode?.[0]);
   }, [searchParams]);
+
+  useEffect(() => {
+    setPage(1);
+    setType(true);
+  }, [code, priceCode, areaCode]);
 
   useEffect(() => {
     mutationGetLimitPost.mutate({
@@ -114,11 +121,6 @@ function List({ code }) {
       priceCode,
     });
   }, [code, page, selected, priceCode, areaCode]);
-
-  useEffect(() => {
-    setPage(1);
-    setType(true);
-  }, [code, priceCode, areaCode]);
 
   const handleLatest = () => {
     setType(false);

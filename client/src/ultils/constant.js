@@ -5,4 +5,7 @@ export const path = {
   CTMB: "cho-thue-mat-bang",
   CTPT: "cho-thue-phong-tro",
   NCT: "nha-cho-thue",
+  System: "/he-thong/*",
+  CREATEPOST: "tao-moi-tin-dang",
+  MANAGEPOST: "quan-li-tin-dang",
 };

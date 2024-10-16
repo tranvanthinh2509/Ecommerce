@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Home, HomePage, Login, Rental } from "./contains/Public";
+import { System, CreatePost, ManagePost } from "./contains/System";
 import { path } from "./ultils/constant";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -70,6 +71,10 @@ function App() {
           <Route path={path.CTMB} element={<Rental />} />
           <Route path={path.NCT} element={<Rental />} />
           <Route path={path.Home} element={<HomePage />} />
+        </Route>
+        <Route path={path.System} element={<System />}>
+          <Route path={path.CREATEPOST} element={<CreatePost />} />
+          <Route path={path.MANAGEPOST} element={<ManagePost />} />
         </Route>
       </Routes>
     </div>

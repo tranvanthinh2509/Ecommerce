@@ -39,28 +39,34 @@ function Header() {
     {
       title: "Đăng tin cho thuê",
       icon: <FaPenNib color="#acac0f" />,
+      path: "/he-thong/tao-moi-tin-dang",
     },
     {
       title: "Quản lý tin đăng",
       icon: <FaRegListAlt color="red" />,
+      path: "/he-thong/quan-li-tin-dang",
     },
     {
       title: "Nạp tiền",
       icon: <FaWallet color="#1c8b0e" />,
+      path: null,
     },
     {
       title: "Lịch sử nạp tiền",
       icon: <FaHistory color="black" />,
+      path: null,
     },
     {
       title: "Thông tin cá nhân",
       icon: <RxAvatar />,
+      path: "/he-thong/thong-tin-ca-nhan",
     },
 
     {
       title: "Đăng xuất",
       icon: <RiLogoutBoxRLine />,
       separate: handleLogOut,
+      path: null,
     },
   ];
 
