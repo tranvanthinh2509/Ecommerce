@@ -43,7 +43,7 @@ function SideBar() {
     },
   ];
   return (
-    <div className="bg-primary w-64 border-r border-gray-300 px-4 py-4 ">
+    <div className="bg-primary w-80 border-r border-gray-300 px-4 py-4 flex-none">
       <div className="flex items-center gap-3 my-3">
         <Image
           className="w-16 h-16 object-cover rounded-[-50] flex-none"

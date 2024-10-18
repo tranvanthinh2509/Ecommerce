@@ -10,7 +10,7 @@ function Header() {
   });
   return (
     <div className="w-full bg-blue-900 text-white px-4 py-2 flex items-center flex-none">
-      <h1 className=" font-bold w-64 flex-none">Phongtro123.com</h1>
+      <h1 className=" font-bold w-80 flex-none">Phongtro123.com</h1>
       <div className="flex-auto">
         <div className="w-full flex">
           <NavLink
