@@ -18,6 +18,12 @@ module.exports = {
       value: {
         type: Sequelize.STRING,
       },
+      min: {
+        type: Sequelize.INTEGER,
+      },
+      max: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
