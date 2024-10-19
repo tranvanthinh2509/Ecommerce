@@ -3,6 +3,7 @@ import SelectOverview from "./components/SelectOverview";
 import InputOverview from "./components/InputOverview";
 import { useSelector } from "react-redux";
 import InputIncrease from "./components/InputIncrease";
+import AddPicture from "./components/AddPicture";
 
 function OverView({ payload, setPayload }) {
   const gender = [

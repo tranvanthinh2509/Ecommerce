@@ -8,10 +8,21 @@ import * as UserService from "./services/auth";
 import { updateUser } from "./redux/slices/userSlice";
 import { jwtDecode } from "jwt-decode";
 import { isJsonString } from "./ultils/func";
-
+import { useQuery } from "@tanstack/react-query";
+import * as PriceService from "../src/services/price";
+import * as AreaService from "../src/services/area";
 function App() {
   const dispatch = useDispatch();
   // const user = useSelector((state) => state.user);
+
+  const { data: price } = useQuery({
+    queryKey: ["Price"],
+    queryFn: PriceService.getAllPrice,
+  });
+  const { data: area } = useQuery({
+    queryKey: ["Area"],
+    queryFn: AreaService.getAllArea,
+  });
 
   useEffect(() => {
     const { storageData, decoded } = handleDecoded();

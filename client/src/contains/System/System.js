@@ -18,7 +18,7 @@ function System() {
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <div className="w-full flex flex-auto">
+      <div className="w-full flex flex-auto bg-primary ">
         <SideBar />
         <Outlet />
       </div>
