@@ -1,6 +1,66 @@
 const { query } = require("express");
 const PostService = require("../services/PostService");
 
+const createPost = async (req, res) => {
+  try {
+    const {
+      categoryCode,
+      title,
+      category,
+      priceNumber,
+      areaNumber,
+      image,
+      address,
+      priceCode,
+      areaCode,
+      description,
+      target,
+      province,
+      label,
+      userId,
+    } = req.body;
+    console.log(req.body);
+
+    if (
+      !title ||
+      !categoryCode ||
+      !description ||
+      !priceCode ||
+      !areaCode ||
+      !label ||
+      !address ||
+      !userId
+    ) {
+      return res.status(404).json({
+        status: "ERR",
+        msg: "Missing Input",
+      });
+    }
+
+    const response = await PostService.createPost(
+      categoryCode,
+      title,
+      category,
+      priceNumber,
+      areaNumber,
+      image,
+      address,
+      priceCode,
+      areaCode,
+      description,
+      target,
+      province,
+      label,
+      userId
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      msg: "Error in controller : " + error,
+    });
+  }
+};
+
 const getAllPost = async (req, res) => {
   try {
     const {
@@ -67,6 +127,7 @@ const getNewPost = async (req, res) => {
 };
 
 module.exports = {
+  createPost,
   getAllPost,
   getLimitPost,
   getNewPost,

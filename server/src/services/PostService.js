@@ -1,5 +1,114 @@
 const db = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
+const { generateCodeData } = require("../utils/generateCode");
+import { v4 } from "uuid";
+
+const createPost = (
+  categoryCode,
+  title,
+  category,
+  priceNumber,
+  areaNumber,
+  image,
+  address,
+  priceCode,
+  areaCode,
+  description,
+  target,
+  province,
+  label,
+  userId
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let hashtag = Math.floor(Math.random() * 10000000);
+      let labelCode = generateCodeData(label).trim();
+      let provinceCode = province?.includes("Thành phố")
+        ? generateCodeData(province?.replace("Thành phố ", ""))
+        : generateCodeData(province?.replace("Tỉnh ", ""));
+
+      let attributesId = v4();
+      let overviewId = v4();
+      let imagesId = v4();
+      let currentDate = new Date();
+
+      await db.Post.create({
+        id: v4(),
+        title: title,
+        labelCode: labelCode,
+        address: address,
+        attributesId,
+        categoryCode: categoryCode,
+        description: JSON.stringify(description),
+        userId,
+        overviewId,
+        imagesId,
+        priceCode,
+        areaCode,
+        cityCode: provinceCode,
+      });
+
+      await db.Attribute.create({
+        id: attributesId,
+        price: priceNumber,
+        acreage: areaNumber,
+        hastag: hashtag,
+      });
+
+      await db.Image.create({
+        id: imagesId,
+        image: JSON.stringify(image),
+      });
+
+      await db.Overview.create({
+        id: overviewId,
+        code: "#" + hashtag,
+        area: label,
+        type: category,
+        target: target,
+        bonus: "Tin thường",
+        created: currentDate,
+        expire: currentDate.setDate(currentDate.getDate() + 28),
+      });
+
+      await db.City.findOrCreate({
+        where: {
+          [Op.or]: [
+            {
+              value: province?.replace("Thành phố ", ""),
+            },
+            {
+              value: province?.replace("Tỉnh ", ""),
+            },
+          ],
+        },
+        defaults: {
+          code: provinceCode,
+          value: province?.includes("Thành phố")
+            ? province?.replace("Thành phố ", "")
+            : province?.replace("Tỉnh ", ""),
+        },
+      });
+
+      await db.Label.findOrCreate({
+        where: {
+          code: labelCode,
+        },
+        defaults: {
+          code: labelCode,
+          value: label,
+        },
+      });
+
+      resolve({
+        status: "OK",
+        msg: "Create post success!",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 const getAllPost = (
   page,
@@ -158,4 +267,5 @@ module.exports = {
   getAllPost,
   getLimitPost,
   getNewPost,
+  createPost,
 };
