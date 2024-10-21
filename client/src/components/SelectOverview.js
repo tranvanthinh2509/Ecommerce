@@ -8,7 +8,13 @@ function SelectOverview({
   name,
   type,
   reset,
+  invalidFields,
+  setInvalidFields,
 }) {
+  const handleError = () => {
+    let nameInvalid = invalidFields?.find((item) => item?.name === name);
+    return `${nameInvalid ? nameInvalid?.mes : ""}`;
+  };
   return (
     <div className="flex flex-col gap-2 flex-1 w-1/2">
       <lable className="font-bold text-black" htmlFor="select-overview">
@@ -23,6 +29,9 @@ function SelectOverview({
             ? setValue(e.target.value)
             : setValue((prev) => ({ ...prev, [name]: e.target.value }))
         }
+        onFocus={() => {
+          setInvalidFields([]);
+        }}
       >
         <option value="">{`--Chọn ${
           name === "target" ? "tất cả" : label
@@ -35,6 +44,7 @@ function SelectOverview({
           );
         })}
       </select>
+      <small className="italic text-red-500">{handleError()}</small>
     </div>
   );
 }

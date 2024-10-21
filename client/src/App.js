@@ -15,15 +15,6 @@ function App() {
   const dispatch = useDispatch();
   // const user = useSelector((state) => state.user);
 
-  const { data: price } = useQuery({
-    queryKey: ["Price"],
-    queryFn: PriceService.getAllPrice,
-  });
-  const { data: area } = useQuery({
-    queryKey: ["Area"],
-    queryFn: AreaService.getAllArea,
-  });
-
   useEffect(() => {
     const { storageData, decoded } = handleDecoded();
 

@@ -1,18 +1,9 @@
-export const isJsonString = (data) => {
-  try {
-    JSON.parse(data);
-  } catch (error) {
-    return false;
-  }
-  return true;
-};
-
-export const validate = (payload, setInvalidFields) => {
+const validate = (payload, setInvalidFields) => {
   let invalids = 0;
 
   const formatPayload = Object.entries(payload);
   for (let arr of formatPayload) {
-    if (arr[1] === "") {
+    if (arr[1].trim() === "") {
       invalids++;
       setInvalidFields((prev) => [
         ...prev,
@@ -20,6 +11,8 @@ export const validate = (payload, setInvalidFields) => {
       ]);
     }
   }
+
+  console.log(formatPayload);
 
   let pass;
   for (let arr of formatPayload) {
@@ -54,26 +47,6 @@ export const validate = (payload, setInvalidFields) => {
           ]);
         }
         break;
-      case "priceNumber":
-        const regexpriceNumber = /^[+-]?\d+(\.\d+)?$/;
-        if (!regexpriceNumber.test(arr[1].split(" ")[0])) {
-          invalids++;
-          setInvalidFields((prev) => [
-            ...prev,
-            { name: arr[0], mes: "Chưa đặt giá trị hợp lệ cho trường này" },
-          ]);
-        }
-        break;
-      case "areaNumber":
-        const regexareaNumber = /^[+-]?\d+(\.\d+)?$/;
-        if (!regexareaNumber.test(arr[1].split(" ")[0])) {
-          invalids++;
-          setInvalidFields((prev) => [
-            ...prev,
-            { name: arr[0], mes: "Chưa đặt giá trị hợp lệ cho trường này" },
-          ]);
-        }
-        break;
 
       default:
         break;
@@ -83,7 +56,4 @@ export const validate = (payload, setInvalidFields) => {
   return invalids;
 };
 
-export const generateRange = (start, end) => {
-  const length = end + 1 - start;
-  return Array.from({ length }, (_, index) => start + index);
-};
+export default validate;

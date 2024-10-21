@@ -2,8 +2,21 @@ import { useState } from "react";
 import { BsCaretUpFill } from "react-icons/bs";
 import { BsCaretDownFill } from "react-icons/bs";
 
-function InputIncrease({ label, unit, type, value, setValue, name }) {
+function InputIncrease({
+  label,
+  unit,
+  type,
+  value,
+  setValue,
+  name,
+  invalidFields,
+  setInvalidFields,
+}) {
   const [check, setCheck] = useState(false);
+  const handleError = () => {
+    let nameInvalid = invalidFields?.find((item) => item?.name === name);
+    return `${nameInvalid ? nameInvalid?.mes : ""}`;
+  };
   return (
     <div className="flex flex-col mt-3 gap-2 w-1/2">
       <label className="font-bold ">{label}</label>
@@ -19,6 +32,9 @@ function InputIncrease({ label, unit, type, value, setValue, name }) {
                 [name]: e.target.value,
               }));
             }
+          }}
+          onFocus={() => {
+            setInvalidFields([]);
           }}
         ></input>
         <div className="outline-none border border-gray-300 p-2 rounded-tr-md rounded-br-md bg-gray-200 flex-none relative">
@@ -63,6 +79,7 @@ function InputIncrease({ label, unit, type, value, setValue, name }) {
           Nếu là 1 triệu thì nhập 1000000
         </span>
       )}
+      <small className="italic text-red-500">{handleError()}</small>
     </div>
   );
 }

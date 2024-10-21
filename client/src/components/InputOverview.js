@@ -1,8 +1,20 @@
-function InputOverview({ label, value, setValue, type }) {
+function InputOverview({
+  label,
+  value,
+  setValue,
+  type,
+  invalidFields,
+  setInvalidFields,
+}) {
   let Comp = "input";
   if (type === "description") {
     Comp = "textarea";
   }
+
+  const handleError = () => {
+    let nameInvalid = invalidFields?.find((item) => item?.name === type);
+    return `${nameInvalid ? nameInvalid?.mes : ""}`;
+  };
 
   return (
     <div className="flex flex-col gap-2 mt-3">
@@ -12,6 +24,9 @@ function InputOverview({ label, value, setValue, type }) {
       <Comp
         id={type}
         value={value?.[type]}
+        onFocus={() => {
+          setInvalidFields([]);
+        }}
         onChange={(e) =>
           setValue((prev) => ({
             ...prev,
@@ -20,6 +35,7 @@ function InputOverview({ label, value, setValue, type }) {
         }
         className="outline-none border border-gray-300 p-2 rounded-md"
       ></Comp>
+      <small className="italic text-red-500">{handleError()}</small>
     </div>
   );
 }

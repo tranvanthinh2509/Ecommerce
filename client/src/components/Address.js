@@ -2,7 +2,7 @@ import SelectAddress from "./SelectAddress";
 import { memo, useEffect, useState } from "react";
 import * as ProvinceService from "../services/province";
 
-function Address({ payload, setPayload }) {
+function Address({ invalidFields, setInvalidFields, payload, setPayload }) {
   const [provinces, setProvinces] = useState([]);
   const [province, setProvince] = useState();
   const [districts, setDistricts] = useState([]);
@@ -67,6 +67,8 @@ function Address({ payload, setPayload }) {
       <h1 className="text-[-18] font-bold my-2">Địa chỉ cho thuê</h1>
       <div className="flex gap-4">
         <SelectAddress
+          invalidFields={invalidFields}
+          setInvalidFields={setInvalidFields}
           label="Tỉnh/Thành phố"
           options={provinces}
           value={province}
@@ -74,6 +76,8 @@ function Address({ payload, setPayload }) {
           type="province"
         />
         <SelectAddress
+          invalidFields={invalidFields}
+          setInvalidFields={setInvalidFields}
           label="Quận/Huyện"
           type="district"
           options={districts}

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import InputIncrease from "./components/InputIncrease";
 import AddPicture from "./components/AddPicture";
 
-function OverView({ payload, setPayload }) {
+function OverView({ payload, setPayload, invalidFields, setInvalidFields }) {
   const gender = [
     {
       code: "male",
@@ -14,6 +14,10 @@ function OverView({ payload, setPayload }) {
     {
       code: "female",
       value: "Nữ",
+    },
+    {
+      code: "all",
+      value: "Tất cả",
     },
   ];
   const user = useSelector((state) => state?.user?.currentUser);
@@ -25,6 +29,8 @@ function OverView({ payload, setPayload }) {
     <div className="mt-6 ">
       <h1 className="text-[-18] font-bold my-2">Thông tin</h1>
       <SelectOverview
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
         value={payload}
         setValue={setPayload}
         name="categoryCode"
@@ -37,12 +43,16 @@ function OverView({ payload, setPayload }) {
         type="title"
         value={payload}
         setValue={setPayload}
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
       />
       <InputOverview
         label="Nội dung mô tả"
         type="description"
         value={payload}
         setValue={setPayload}
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
       />
 
       <div className="flex flex-col mt-3 gap-2 w-1/2">
@@ -69,6 +79,8 @@ function OverView({ payload, setPayload }) {
         value={payload?.priceNumber}
         setValue={setPayload}
         name="priceNumber"
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
       />
       <InputIncrease
         label="Diện tích"
@@ -77,8 +89,12 @@ function OverView({ payload, setPayload }) {
         value={payload?.areaNumber}
         setValue={setPayload}
         name="areaNumber"
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
       />
       <SelectOverview
+        invalidFields={invalidFields}
+        setInvalidFields={setInvalidFields}
         label="Đối tượng"
         options={gender}
         value={payload}

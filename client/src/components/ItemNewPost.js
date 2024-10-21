@@ -23,7 +23,7 @@ function ItemNewPost({ data, index }) {
       >
         <div className="w-16 h-16 flex-none">
           <Image
-            src={JSON.parse(data?.images?.image)[0]}
+            src={data?.images?.image && JSON.parse(data?.images?.image)[0]}
             className="w-16 h-16 object-cover rounded-sm"
           />
         </div>

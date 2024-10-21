@@ -8,12 +8,21 @@ import { RiDeleteBinFill } from "react-icons/ri";
 import Loading from "../../components/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { getCodes1 } from "../../ultils/Common/getCodes";
+import * as PriceService from "../../services/price";
+import * as AreaService from "../../services/area";
+import { formatPriceToString } from "../../ultils/Common/formatVietnameseToString";
+import { useSelector } from "react-redux";
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import Swal from "sweetalert2";
+import { validate } from "../../ultils/func";
+
 function CreatePost() {
+  const user = useSelector((state) => state?.user?.currentUser);
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [payload, setPayload] = useState({
     categoryCode: "",
     title: "",
-    star: "",
     priceNumber: 0,
     areaNumber: 0,
     image: "",
@@ -23,18 +32,28 @@ function CreatePost() {
     description: "",
     target: "",
     province: "",
+    label: "",
+    userId: "",
+    category: "",
   });
 
   const [imagesPreview, setImagesPreview] = useState([]);
   const [areaArr, setAreaArr] = useState([]);
   const [priceArr, setPriceArr] = useState([]);
+  const [invalidFields, setInvalidFields] = useState([]);
 
   const { data: prices } = useQuery({
     queryKey: ["Price"],
+    queryFn: PriceService.getAllPrice,
   });
 
   const { data: areas } = useQuery({
     queryKey: ["Area"],
+    queryFn: AreaService.getAllArea,
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["Category"],
   });
 
   useEffect(() => {
@@ -71,21 +90,83 @@ function CreatePost() {
       image: payload.image?.filter((item) => item !== image),
     }));
   };
-  const handleSubmit = () => {
-    let priceCodeArr = getCodes1(+payload?.priceNumber, priceArr, 1, 15);
+
+  const mutationCreatePost = useMutationHooks(async (data) => {
+    const res = await PostService.createPost(data);
+    return res;
+  });
+
+  const { data, isSuccess, isError } = mutationCreatePost;
+
+  const handleSubmit = async () => {
+    let priceCodeArr = getCodes1(
+      +payload?.priceNumber / 1000000,
+      priceArr,
+      1,
+      15
+    );
     let priceCode = priceCodeArr && priceCodeArr[0]?.code;
 
-    // let areaCodeArr = getCodes1(+payload?.areaNumber, areaArr, 20, 90);
-    // let areaCode = areaCodeArr && areaCodeArr[0]?.code;
+    let areaCodeArr = getCodes1(+payload?.areaNumber, areaArr, 20, 90);
+    let areaCode = areaCodeArr && areaCodeArr[0]?.code;
 
     let finalPayload = {
       ...payload,
+      priceNumber: formatPriceToString(payload?.priceNumber),
+      areaNumber: payload?.areaNumber + " m2",
       priceCode,
-      // areaCode,
+      areaCode,
+      target: payload.target,
+      label:
+        categories?.data?.filter(
+          (item) => item?.code === payload.categoryCode
+        )[0]?.value +
+          " " +
+          payload.address.split(",")[0] || "",
+      userId: user?.id,
+      category: categories?.data?.filter(
+        (item) => item?.code === payload.categoryCode
+      )[0]?.value,
     };
 
-    console.log("final ", finalPayload);
+    const result = validate(finalPayload, setInvalidFields);
+    console.log(result);
+    if (result === 0) {
+      setLoading(true);
+      await mutationCreatePost.mutate(finalPayload);
+    }
   };
+
+  useEffect(() => {
+    if (data) {
+      if (data?.status === "OK") {
+        setLoading(false);
+        Swal.fire("Congratulation", data?.msg, "success").then(() => {
+          setPayload({
+            categoryCode: "",
+            title: "",
+            priceNumber: 0,
+            areaNumber: 0,
+            image: "",
+            address: "",
+            priceCode: "",
+            areaCode: "",
+            description: "",
+            target: "",
+            province: "",
+            label: "",
+            userId: "",
+            category: "",
+          });
+        });
+      } else {
+        setLoading(false);
+        Swal.fire("Opps", "Đăng tin không thành công", "error");
+      }
+    }
+
+    isError && setLoading(false);
+  }, [data, isSuccess, isError]);
 
   return (
     <div className="px-12 py-8 w-full bg-primary mb-28">
@@ -94,8 +175,18 @@ function CreatePost() {
       </h1>
       <div className="flex gap-3">
         <div className="flex-auto">
-          <Address payload={payload} setPayload={setPayload} />
-          <OverView payload={payload} setPayload={setPayload} />
+          <Address
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
+            payload={payload}
+            setPayload={setPayload}
+          />
+          <OverView
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
+            payload={payload}
+            setPayload={setPayload}
+          />
           <div className="w-full mt-2">
             <h2 className="font-bold ">Hình ảnh</h2>
             <small className="italic text-[-14] ">
@@ -104,6 +195,9 @@ function CreatePost() {
             <div className="w-full">
               <label
                 htmlFor="file"
+                onClick={() => {
+                  setInvalidFields([]);
+                }}
                 className="w-full h-48 border-2 border-gray-400 border-dashed flex flex-col items-center justify-center font-bold uppercase rounded-md"
               >
                 {isLoading ? (
@@ -117,6 +211,11 @@ function CreatePost() {
                   </div>
                 )}
               </label>
+              <small className="italic text-red-500">
+                {invalidFields?.find((item) => item?.name === "image")
+                  ? invalidFields?.find((item) => item?.name === "image")?.mes
+                  : ""}
+              </small>
 
               <input
                 onChange={handleUploadImage}
@@ -162,6 +261,11 @@ function CreatePost() {
           <Loading isPending={true} />
         </div>
       </div>
+      {loading && (
+        <div className="bg-black fixed top-0 right-0 left-0 bottom-0 opacity-25 flex justify-center items-center">
+          <Loading isPending={loading} />
+        </div>
+      )}
     </div>
   );
 }

@@ -166,7 +166,7 @@ function List({ code }) {
                 name={item?.user?.name}
                 phone={item?.user?.phone}
                 address={item?.address}
-                image={JSON.parse(item?.images?.image)}
+                image={item?.images?.image && JSON.parse(item?.images?.image)}
               />
             );
           })}

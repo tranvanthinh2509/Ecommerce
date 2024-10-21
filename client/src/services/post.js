@@ -1,5 +1,13 @@
 import axios from "axios";
 
+export const createPost = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_SERVER_URL}/api/post/createPost`,
+    data
+  );
+  return res?.data;
+};
+
 export const getLimitPost = async (
   code,
   page,

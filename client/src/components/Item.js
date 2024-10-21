@@ -33,9 +33,12 @@ function Item({
     <div className="w-full flex items-start gap-2 px-5 py-3 border-y border-y-red-500">
       <div className="w-2/5 relative">
         <div className="relative">
-          <Image src={image[1]} className="w-[280] h-[240] object-cover" />
+          <Image
+            src={image && image[1]}
+            className="w-[280] h-[240] object-cover"
+          />
           <div className="absolute left-1 bottom-2 text-white bg-black bg-opacity-70 px-2 text-[-14]">
-            {image.length} ảnh
+            {image?.length} ảnh
           </div>
         </div>
       </div>
