@@ -6,5 +6,6 @@ router.post("/createPost", PostController.createPost);
 router.get("/getAllPost", PostController.getAllPost);
 router.get("/getLimitPost", PostController.getLimitPost);
 router.get("/getNewPost", PostController.getNewPost);
+router.get("/getLimitAdmin", PostController.getLimitAdmin);
 
 module.exports = router;

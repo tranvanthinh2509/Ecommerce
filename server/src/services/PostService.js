@@ -2,6 +2,7 @@ const db = require("../models");
 const { Op, where } = require("sequelize");
 const { generateCodeData } = require("../utils/generateCode");
 import { v4 } from "uuid";
+import generateDate from "../utils/generateDate";
 
 const createPost = (
   categoryCode,
@@ -30,7 +31,7 @@ const createPost = (
       let attributesId = v4();
       let overviewId = v4();
       let imagesId = v4();
-      let currentDate = new Date();
+      let currentDate = generateDate();
 
       await db.Post.create({
         id: v4(),
@@ -67,8 +68,8 @@ const createPost = (
         type: category,
         target: target,
         bonus: "Tin thường",
-        created: currentDate,
-        expire: currentDate.setDate(currentDate.getDate() + 28),
+        created: currentDate.today,
+        expire: currentDate.expireDay,
       });
 
       await db.City.findOrCreate({
@@ -263,9 +264,64 @@ const getNewPost = () => {
   });
 };
 
+const getLimitAdmin = (page, { categoryCode, filter, cityCode }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let order;
+      if (filter === "default") {
+        order = [["createdAt", "ASC"]];
+      } else {
+        order = [["createdAt", "DESC"]];
+      }
+
+      let queries = {};
+
+      let offset = !page || +page <= 1 ? 0 : +page - 1;
+
+      if (categoryCode && categoryCode !== "null")
+        queries.categoryCode = categoryCode;
+
+      if (cityCode && cityCode !== "null") queries.cityCode = cityCode;
+
+      const posts = await db.Post.findAndCountAll({
+        offset: offset * +process.env.LIMITADMIN,
+        limit: +process.env.LIMITADMIN,
+
+        where: queries,
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          { model: db.Image, as: "images", attributes: ["image"] },
+          {
+            model: db.Attribute,
+            as: "attributes",
+            attributes: ["price", "acreage", "published", "hastag"],
+          },
+          {
+            model: db.Overview,
+            as: "overviews",
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+          { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
+        ],
+        order,
+      });
+
+      resolve({
+        status: posts ? "OK" : "ERR",
+        limit: +process.env.LIMITADMIN,
+        page: offset + 1,
+        data: posts,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getAllPost,
   getLimitPost,
   getNewPost,
   createPost,
+  getLimitAdmin,
 };

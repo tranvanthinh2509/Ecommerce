@@ -5,10 +5,13 @@ const initRoutes = require("./src/routes");
 const connectDatabase = require("./src/config/connectDatabase");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+
+import generateDate from "./src/utils/generateDate";
 // const generateCode = require("./src/utils/generateCode");
 
 // console.log("generate code ", generateCode.generateCode(4));
 // console.log("generate code ", generateCode.generateCode23("duoi triệu"));
+console.log("gera ", generateDate());
 
 const app = express();
 app.use(
