@@ -16,31 +16,42 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import Swal from "sweetalert2";
 import { validate } from "../../ultils/func";
 
-function CreatePost() {
+function CreatePost({ isEdit }) {
+  const dataEdit = useSelector((state) => state?.post?.postItem);
   const user = useSelector((state) => state?.user?.currentUser);
+
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [payload, setPayload] = useState({
-    categoryCode: "",
-    title: "",
-    priceNumber: 0,
-    areaNumber: 0,
-    image: "",
-    address: "",
-    priceCode: "",
-    areaCode: "",
-    description: "",
-    target: "",
-    province: "",
-    label: "",
-    userId: "",
-    category: "",
+  const [payload, setPayload] = useState(() => {
+    const initData = {
+      categoryCode: dataEdit?.categoryCode || "",
+      title: dataEdit?.title || "",
+      priceNumber: +dataEdit?.attributes?.price?.split(" ")[0] * 1000000 || 0,
+      areaNumber: dataEdit?.attributes?.acreage?.replace("m2", "") || 0,
+      image: (dataEdit && JSON.parse(dataEdit?.images?.image)) || "",
+      address: dataEdit?.address || "",
+      priceCode: dataEdit?.priceCode || "",
+      areaCode: dataEdit?.areaCode || "",
+      description: (dataEdit && JSON.parse(dataEdit?.description)) || "",
+      target: dataEdit?.overviews?.target || "",
+      province: dataEdit?.province || "",
+      userId: dataEdit?.userId || "",
+      // category: dataEdit?.overviews?.type || "",
+    };
+
+    return initData;
   });
 
   const [imagesPreview, setImagesPreview] = useState([]);
   const [areaArr, setAreaArr] = useState([]);
   const [priceArr, setPriceArr] = useState([]);
   const [invalidFields, setInvalidFields] = useState([]);
+
+  useEffect(() => {
+    if (dataEdit) {
+      setImagesPreview(JSON.parse(dataEdit?.images?.image));
+    }
+  }, [dataEdit]);
 
   const { data: prices } = useQuery({
     queryKey: ["Price"],
@@ -80,14 +91,14 @@ function CreatePost() {
     setIsLoading(false);
 
     setImagesPreview((prev) => [...prev, ...images]);
-    setPayload((prev) => ({ ...prev, image: [...payload.image, ...images] }));
+    setPayload((prev) => ({ ...prev, image: [...prev.image, ...images] }));
   };
 
   const handleDeleteImage = (image) => {
     setImagesPreview((prev) => prev?.filter((item) => item !== image));
     setPayload((prev) => ({
       ...prev,
-      image: payload.image?.filter((item) => item !== image),
+      image: prev.image?.filter((item) => item !== image),
     }));
   };
 
@@ -130,51 +141,51 @@ function CreatePost() {
     };
 
     const result = validate(finalPayload, setInvalidFields);
-    console.log(result);
     if (result === 0) {
-      setLoading(true);
-      await mutationCreatePost.mutate(finalPayload);
+      // setLoading(true);
+      // await mutationCreatePost.mutate(finalPayload);
+      console.log("final ", finalPayload);
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      if (data?.status === "OK") {
-        setLoading(false);
-        Swal.fire("Congratulation", data?.msg, "success").then(() => {
-          setPayload({
-            categoryCode: "",
-            title: "",
-            priceNumber: 0,
-            areaNumber: 0,
-            image: "",
-            address: "",
-            priceCode: "",
-            areaCode: "",
-            description: "",
-            target: "",
-            province: "",
-            label: "",
-            userId: "",
-            category: "",
-          });
-        });
-      } else {
-        setLoading(false);
-        Swal.fire("Opps", "Đăng tin không thành công", "error");
-      }
-    }
+  // useEffect(() => {
+  //   if (data) {
+  //     if (data?.status === "OK") {
+  //       setLoading(false);
+  //       Swal.fire("Congratulation", data?.msg, "success").then(() => {
+  //         setPayload({
+  //           categoryCode: "",
+  //           title: "",
+  //           priceNumber: 0,
+  //           areaNumber: 0,
+  //           image: "",
+  //           address: "",
+  //           priceCode: "",
+  //           areaCode: "",
+  //           description: "",
+  //           target: "",
+  //           province: "",
+  //           label: "",
+  //           userId: "",
+  //           category: "",
+  //         });
+  //       });
+  //     } else {
+  //       setLoading(false);
+  //       Swal.fire("Opps", "Đăng tin không thành công", "error");
+  //     }
+  //   }
 
-    isError && setLoading(false);
-  }, [data, isSuccess, isError]);
+  //   isError && setLoading(false);
+  // }, [data, isSuccess, isError]);
 
   return (
-    <div className="px-12 py-8 w-full bg-primary mb-28">
+    <div className="px-12 py-8 w-full bg-primary ">
       <h1 className="py-3 text-2xl font-semibold border-b border-gray-300 w-full">
-        Đăng tin mới
+        {isEdit ? "Chỉnh sửa tin đăng" : "Đăng tin mới"}
       </h1>
       <div className="flex gap-3">
-        <div className="flex-auto">
+        <div className="flex-1">
           <Address
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
@@ -226,7 +237,7 @@ function CreatePost() {
               />
               <div className="mt-3">
                 <h2 className="font-bold">Ảnh đã chọn</h2>
-                <div className="flex items-center gap-3 mt-3">
+                <div className="flex items-center gap-3 mt-3 flex-wrap">
                   {imagesPreview?.map((item) => {
                     return (
                       <div key={item} className="relative w-32 h-32 ">
@@ -247,7 +258,7 @@ function CreatePost() {
                 </div>
               </div>
               <Button
-                text="Đăng tin"
+                text={isEdit ? "Cập nhật" : "Đăng tin"}
                 bgColor="bg-green-500 mt-10"
                 textColor="text-white"
                 fullWidth={true}

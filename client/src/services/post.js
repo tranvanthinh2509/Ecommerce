@@ -48,3 +48,10 @@ export const uploadImageToCloud = async (data) => {
   );
   return res;
 };
+
+export const getLimitAdmin = async (code, page, filter) => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_SERVER_URL}/api/post/getLimitAdmin?categoryCode=${code}&page=${page}&filter=${filter}`
+  );
+  return res.data;
+};
