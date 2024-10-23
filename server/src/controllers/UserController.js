@@ -123,6 +123,20 @@ const sendVerificationCode = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const { ...payload } = req.body;
+
+    const response = await UserService.updateUser(id, payload);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      msg: "Error in controller : " + error,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   signInUser,
@@ -130,4 +144,5 @@ module.exports = {
   refreshToken,
   logOutUser,
   sendVerificationCode,
+  updateUser,
 };

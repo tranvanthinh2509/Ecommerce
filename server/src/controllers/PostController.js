@@ -61,6 +61,32 @@ const createPost = async (req, res) => {
   }
 };
 
+const updatePost = async (req, res) => {
+  try {
+    const { postId, attributesId, overviewId, imagesId, ...payload } = req.body;
+
+    if (!postId || !attributesId || !overviewId || !imagesId) {
+      return res.status(404).json({
+        status: "ERR",
+        msg: "Missing Input",
+      });
+    }
+
+    const response = await PostService.updatePost(
+      postId,
+      attributesId,
+      overviewId,
+      imagesId,
+      payload
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      msg: "Error in controller : " + error,
+    });
+  }
+};
+
 const getAllPost = async (req, res) => {
   try {
     const {
@@ -148,10 +174,32 @@ const getLimitAdmin = async (req, res) => {
     });
   }
 };
+
+const deletePost = async (req, res) => {
+  try {
+    const { postId } = req.query;
+
+    if (!postId) {
+      return res.status(404).json({
+        status: "ERR",
+        msg: "Missing Input",
+      });
+    }
+
+    const response = await PostService.deletePost(postId);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      msg: "Error in controller : " + error,
+    });
+  }
+};
 module.exports = {
   createPost,
   getAllPost,
   getLimitPost,
   getNewPost,
   getLimitAdmin,
+  updatePost,
+  deletePost,
 };

@@ -111,6 +111,107 @@ const createPost = (
   });
 };
 
+const updatePost = (postId, attributesId, overviewId, imagesId, payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let labelCode = generateCodeData(payload.label).trim();
+      let provinceCode = payload.province?.includes("Thành phố")
+        ? generateCodeData(payload.province?.replace("Thành phố ", ""))
+        : generateCodeData(payload.province?.replace("Tỉnh ", ""));
+
+      await db.Post.update(
+        {
+          title: payload.title,
+          labelCode: labelCode,
+          address: payload.address,
+          categoryCode: payload.categoryCode,
+          description: JSON.stringify(payload.description),
+          priceCode: payload.priceCode,
+          areaCode: payload.areaCode,
+          cityCode: provinceCode,
+        },
+        {
+          where: {
+            id: postId,
+          },
+        }
+      );
+
+      await db.Attribute.update(
+        {
+          price: payload.priceNumber,
+          acreage: payload.areaNumber,
+        },
+        {
+          where: {
+            id: attributesId,
+          },
+        }
+      );
+
+      await db.Image.update(
+        {
+          image: JSON.stringify(payload.image),
+        },
+        {
+          where: {
+            id: imagesId,
+          },
+        }
+      );
+
+      await db.Overview.update(
+        {
+          area: payload.label,
+          type: payload.category,
+          target: payload.target,
+        },
+        {
+          where: {
+            id: overviewId,
+          },
+        }
+      );
+
+      await db.City.findOrCreate({
+        where: {
+          [Op.or]: [
+            {
+              value: payload.province?.replace("Thành phố ", ""),
+            },
+            {
+              value: payload.province?.replace("Tỉnh ", ""),
+            },
+          ],
+        },
+        defaults: {
+          code: provinceCode,
+          value: payload.province?.includes("Thành phố")
+            ? payload.province?.replace("Thành phố ", "")
+            : payload.province?.replace("Tỉnh ", ""),
+        },
+      });
+
+      await db.Label.findOrCreate({
+        where: {
+          code: labelCode,
+        },
+        defaults: {
+          code: labelCode,
+          value: payload.label,
+        },
+      });
+
+      resolve({
+        status: "OK",
+        msg: "Update post success!",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const getAllPost = (
   page,
   { priceNumber, areaNumber, filter, priceCode, areaCode }
@@ -318,10 +419,28 @@ const getLimitAdmin = (page, { categoryCode, filter, cityCode }) => {
   });
 };
 
+const deletePost = (postId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const respone = await db.Post.destroy({
+        where: { id: postId },
+      });
+      resolve({
+        status: respone > 0 ? "OK" : "ERR",
+        msg: respone > 0 ? "Delete sucess" : "No post delete",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getAllPost,
   getLimitPost,
   getNewPost,
   createPost,
   getLimitAdmin,
+  updatePost,
+  deletePost,
 };
