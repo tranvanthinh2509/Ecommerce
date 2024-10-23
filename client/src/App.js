@@ -11,6 +11,7 @@ import { isJsonString } from "./ultils/func";
 import { useQuery } from "@tanstack/react-query";
 import * as PriceService from "../src/services/price";
 import * as AreaService from "../src/services/area";
+import InfoUser from "./contains/System/InfoUser";
 function App() {
   const dispatch = useDispatch();
   // const user = useSelector((state) => state.user);
@@ -77,6 +78,7 @@ function App() {
         <Route path={path.System} element={<System />}>
           <Route path={path.CREATEPOST} element={<CreatePost />} />
           <Route path={path.MANAGEPOST} element={<ManagePost />} />
+          <Route path={path.INFOUSER} element={<InfoUser />} />
         </Route>
       </Routes>
     </div>

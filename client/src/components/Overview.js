@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import SelectOverview from "./components/SelectOverview";
-import InputOverview from "./components/InputOverview";
+import SelectOverview from "../components/SelectOverview";
+import InputOverview from "../components//InputOverview";
 import { useSelector } from "react-redux";
-import InputIncrease from "./components/InputIncrease";
-import AddPicture from "./components/AddPicture";
+import InputIncrease from "../components//InputIncrease";
 
 function OverView({ payload, setPayload, invalidFields, setInvalidFields }) {
   const gender = [

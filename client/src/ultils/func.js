@@ -74,6 +74,15 @@ export const validate = (payload, setInvalidFields) => {
           ]);
         }
         break;
+      case "image":
+        if (arr[1].length === 0) {
+          invalids++;
+          setInvalidFields((prev) => [
+            ...prev,
+            { name: arr[0], mes: "Không thể bỏ trống trường này" },
+          ]);
+        }
+        break;
 
       default:
         break;

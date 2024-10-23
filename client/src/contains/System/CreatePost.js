@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Address from "../../components/Address";
-import OverView from "../../Overview";
+import OverView from "../../components/Overview";
 import { FcCamera } from "react-icons/fc";
 import * as PostService from "../../services/post";
 import { Button, Image } from "../../components";
@@ -11,12 +11,14 @@ import { getCodes1 } from "../../ultils/Common/getCodes";
 import * as PriceService from "../../services/price";
 import * as AreaService from "../../services/area";
 import { formatPriceToString } from "../../ultils/Common/formatVietnameseToString";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Swal from "sweetalert2";
 import { validate } from "../../ultils/func";
+import { handleManagerPost } from "../../redux/slices/managerSlice";
 
 function CreatePost({ isEdit }) {
+  const dispatch = useDispatch();
   const dataEdit = useSelector((state) => state?.post?.postItem);
   const user = useSelector((state) => state?.user?.currentUser);
 
@@ -28,7 +30,7 @@ function CreatePost({ isEdit }) {
       title: dataEdit?.title || "",
       priceNumber: +dataEdit?.attributes?.price?.split(" ")[0] * 1000000 || 0,
       areaNumber: dataEdit?.attributes?.acreage?.replace("m2", "") || 0,
-      image: (dataEdit && JSON.parse(dataEdit?.images?.image)) || "",
+      image: (dataEdit && JSON.parse(dataEdit?.images?.image)) || [],
       address: dataEdit?.address || "",
       priceCode: dataEdit?.priceCode || "",
       areaCode: dataEdit?.areaCode || "",
@@ -107,6 +109,11 @@ function CreatePost({ isEdit }) {
     return res;
   });
 
+  const mutationUpdatePost = useMutationHooks(async (data) => {
+    const res = await PostService.updatePost(data);
+    return res;
+  });
+
   const { data, isSuccess, isError } = mutationCreatePost;
 
   const handleSubmit = async () => {
@@ -142,42 +149,65 @@ function CreatePost({ isEdit }) {
 
     const result = validate(finalPayload, setInvalidFields);
     if (result === 0) {
-      // setLoading(true);
-      // await mutationCreatePost.mutate(finalPayload);
-      console.log("final ", finalPayload);
+      if (dataEdit) {
+        finalPayload.postId = dataEdit?.id;
+        finalPayload.attributesId = dataEdit?.attributesId;
+        finalPayload.imagesId = dataEdit?.imagesId;
+        finalPayload.overviewId = dataEdit?.overviewId;
+
+        Swal.fire({
+          title: "Do you want to save the changes?",
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Save",
+          denyButtonText: `Don't save`,
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            mutationUpdatePost.mutate(finalPayload);
+            Swal.fire("Saved!", "", "success");
+            dispatch(handleManagerPost());
+          } else if (result.isDenied) {
+            Swal.fire("Changes are not saved", "", "info");
+          }
+        });
+      } else {
+        setLoading(true);
+        await mutationCreatePost.mutate(finalPayload);
+      }
     }
   };
 
-  // useEffect(() => {
-  //   if (data) {
-  //     if (data?.status === "OK") {
-  //       setLoading(false);
-  //       Swal.fire("Congratulation", data?.msg, "success").then(() => {
-  //         setPayload({
-  //           categoryCode: "",
-  //           title: "",
-  //           priceNumber: 0,
-  //           areaNumber: 0,
-  //           image: "",
-  //           address: "",
-  //           priceCode: "",
-  //           areaCode: "",
-  //           description: "",
-  //           target: "",
-  //           province: "",
-  //           label: "",
-  //           userId: "",
-  //           category: "",
-  //         });
-  //       });
-  //     } else {
-  //       setLoading(false);
-  //       Swal.fire("Opps", "Đăng tin không thành công", "error");
-  //     }
-  //   }
+  useEffect(() => {
+    if (data) {
+      if (data?.status === "OK") {
+        setLoading(false);
+        Swal.fire("Congratulation", data?.msg, "success").then(() => {
+          setPayload({
+            categoryCode: "",
+            title: "",
+            priceNumber: 0,
+            areaNumber: 0,
+            image: "",
+            address: "",
+            priceCode: "",
+            areaCode: "",
+            description: "",
+            target: "",
+            province: "",
+            label: "",
+            userId: "",
+            category: "",
+          });
+        });
+      } else {
+        setLoading(false);
+        Swal.fire("Opps", "Đăng tin không thành công", "error");
+      }
+    }
 
-  //   isError && setLoading(false);
-  // }, [data, isSuccess, isError]);
+    isError && setLoading(false);
+  }, [data, isSuccess, isError]);
 
   return (
     <div className="px-12 py-8 w-full bg-primary ">

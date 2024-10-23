@@ -7,7 +7,12 @@ function Select({ options, value, setValue, type, reset }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       >
-        <option value="home" className="bg-white text-black">{`Tất cả`}</option>
+        {type !== "filterStatus" && (
+          <option
+            value="home"
+            className="bg-white text-black"
+          >{`Tất cả`}</option>
+        )}
         {options?.map((item) => {
           return (
             <option

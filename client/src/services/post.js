@@ -8,6 +8,14 @@ export const createPost = async (data) => {
   return res?.data;
 };
 
+export const updatePost = async (data) => {
+  const res = await axios.put(
+    `${process.env.REACT_APP_SERVER_URL}/api/post/updatePost`,
+    data
+  );
+  return res?.data;
+};
+
 export const getLimitPost = async (
   code,
   page,
@@ -52,6 +60,13 @@ export const uploadImageToCloud = async (data) => {
 export const getLimitAdmin = async (code, page, filter) => {
   const res = await axios.get(
     `${process.env.REACT_APP_SERVER_URL}/api/post/getLimitAdmin?categoryCode=${code}&page=${page}&filter=${filter}`
+  );
+  return res.data;
+};
+
+export const deletePost = async (postId) => {
+  const res = await axios.delete(
+    `${process.env.REACT_APP_SERVER_URL}/api/post/deletePost?postId=${postId}`
   );
   return res.data;
 };

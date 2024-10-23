@@ -17,7 +17,7 @@ function InputOverview({
   };
 
   return (
-    <div className="flex flex-col gap-2 mt-3">
+    <div className={`flex flex-col gap-2 mt-3`}>
       <lable className="font-bold text-black" htmlFor={type}>
         {label}
       </lable>

@@ -9,26 +9,41 @@ import Panigation from "../Public/Panigation";
 import { useQuery } from "@tanstack/react-query";
 import Select from "../../components/Select";
 import UpdatePost from "../../components/UpdatePost";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updatePostItem } from "../../redux/slices/postSlice";
+import Swal from "sweetalert2";
+import { handleManagerPost } from "../../redux/slices/managerSlice";
+import { useNavigate } from "react-router-dom";
 
 function ManagePost() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const managerPost = useSelector((state) => state?.manager?.managerPost);
   const [post, setPost] = useState();
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [categories, setCategories] = useState([]);
   const [code, setCode] = useState("home");
   const [isEdit, setIsEdit] = useState(false);
+  const [managerPost1, setManagerPost1] = useState(managerPost);
+
+  useEffect(() => {
+    setManagerPost1(managerPost);
+  }, [managerPost]);
+
   const filterStatus = [
     {
-      title: "Tin đang hiển thị",
+      value: "Lọc theo trạng thái",
+      code: 1,
     },
     {
-      title: "Tin đang hết hạn",
+      value: "Tin đang hoạt động",
+      code: 2,
     },
     {
-      title: "Tin đang đang ẩn",
+      value: "Tin đã hết hạn",
+      code: 3,
     },
   ];
 
@@ -39,6 +54,7 @@ function ManagePost() {
   useEffect(() => {
     setCategories(category?.data);
   }, [category]);
+
   const muationPost = useMutationHooks(async (data) => {
     let { code, page, filter } = data;
     let res;
@@ -54,22 +70,23 @@ function ManagePost() {
 
     setPost(res?.data);
   });
+
+  // console.log("statusCOde", statusCode);
+
+  const muationDeletePost = useMutationHooks(async (data) => {
+    let { postId } = data;
+    const res = await PostService.deletePost(postId);
+    return res;
+  });
   useEffect(() => {
     setPage(1);
   }, [code]);
 
   useEffect(() => {
     muationPost.mutate({ page: page, code: code });
-  }, [page, code]);
+  }, [page, code, managerPost1]);
 
   const checkStatus = (datetime) => {
-    // let todayInSeconds = new Date().getTime();
-    // let expireDayInSeconds = datetime.getTime();
-    // return todayInSeconds >= expireDayInSeconds
-    //   ? "Đang hoạt động"
-    //   : "Đã hết hạn";
-
-    let today = new Date().toDateString();
     return moment(datetime, "DD-MM-YYYY").isSameOrAfter(
       new Date().toDateString()
     );
@@ -78,37 +95,39 @@ function ManagePost() {
   const handleIsEdit = () => {
     setIsEdit(true);
   };
+
+  const handleDeletePost = (postId) => {
+    Swal.fire({
+      title: "Do you want to delete this post?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      denyButtonText: `Don't save`,
+    }).then(async (result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        await muationDeletePost.mutate({ postId: postId });
+        await Swal.fire("Saved!", "", "success");
+        await dispatch(handleManagerPost());
+      } else if (result.isDenied) {
+        Swal.fire("Delete are not saved", "", "info");
+      }
+    });
+  };
   return (
     <div className="px-12 py-8 w-full bg-primary mb-28">
       <div className="flex items-center justify-between border-b border-gray-300 w-full">
         <h1 className="py-3 text-2xl font-semibold  ">Quản lý tin đăng</h1>
         <div className="flex items-center gap-2">
           <Select options={categories} value={code} setValue={setCode} />
-          <div className="flex flex-col gap-2 flex-1 ">
-            <select
-              id="select-overview"
-              className="outline-none border bg-gray-500 border-gray-500 font-semibold text-white p-2 rounded-md "
-              value={" "}
-            >
-              <option value="">{`Lọc theo trạng thái`}</option>
-              {filterStatus?.map((item) => {
-                return (
-                  <option
-                    key={item?.code}
-                    value={item?.code}
-                    id={item?.code}
-                    className="bg-white text-black"
-                  >
-                    {item?.title}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+
           <Button
             text="Đăng tin mới"
             bgColor="bg-red-500"
             textColor="text-white"
+            onClick={() => {
+              navigate("/he-thong/tao-moi-tin-dang");
+            }}
           />
         </div>
       </div>
@@ -169,7 +188,13 @@ function ManagePost() {
                         >
                           <RiFileInfoFill fontSize="24px" />
                         </span>
-                        <span title="Xóa" className="hover:opacity-70">
+                        <span
+                          title="Xóa"
+                          className="hover:opacity-70"
+                          onClick={() => {
+                            handleDeletePost(item?.id);
+                          }}
+                        >
                           <MdDelete fontSize="24px" />
                         </span>
                       </div>

@@ -46,3 +46,11 @@ export const logOutUser = async () => {
   );
   return res.data;
 };
+
+export const updateUser = async (id, data) => {
+  const res = await axios.put(
+    `${process.env.REACT_APP_SERVER_URL}/api/user/updateUser?id=${id}`,
+    data
+  );
+  return res.data;
+};

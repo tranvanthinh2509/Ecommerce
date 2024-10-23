@@ -3,6 +3,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "./slices/userSlice";
 import postReducer from "./slices/postSlice";
+import managerReducer from "./slices/managerSlice";
 
 const userConfig = {
   key: "user",
@@ -14,6 +15,7 @@ export const store = configureStore({
   reducer: {
     user: persistReducer(userConfig, userReducer),
     post: persistReducer(userConfig, postReducer),
+    manager: persistReducer(userConfig, managerReducer),
   },
 });
 

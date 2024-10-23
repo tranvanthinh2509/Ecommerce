@@ -8,4 +8,5 @@ export const path = {
   System: "/he-thong/*",
   CREATEPOST: "tao-moi-tin-dang",
   MANAGEPOST: "quan-li-tin-dang",
+  INFOUSER: "thong-tin-ca-nhan",
 };
