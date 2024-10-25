@@ -165,6 +165,7 @@ const updatePost = (postId, attributesId, overviewId, imagesId, payload) => {
           area: payload.label,
           type: payload.category,
           target: payload.target,
+          expire: generateDate(payload.payload).today,
         },
         {
           where: {
@@ -365,7 +366,7 @@ const getNewPost = () => {
   });
 };
 
-const getLimitAdmin = (page, { categoryCode, filter, cityCode }) => {
+const getLimitAdmin = (page, userId, { categoryCode, filter, cityCode }) => {
   return new Promise(async (resolve, reject) => {
     try {
       let order;
@@ -383,6 +384,7 @@ const getLimitAdmin = (page, { categoryCode, filter, cityCode }) => {
         queries.categoryCode = categoryCode;
 
       if (cityCode && cityCode !== "null") queries.cityCode = cityCode;
+      if (userId && userId !== "null") queries.userId = userId;
 
       const posts = await db.Post.findAndCountAll({
         offset: offset * +process.env.LIMITADMIN,
@@ -435,6 +437,40 @@ const deletePost = (postId) => {
   });
 };
 
+const detailPost = (pid) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const posts = await db.Post.findOne({
+        where: {
+          id: pid,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          { model: db.Image, as: "images", attributes: ["image"] },
+          {
+            model: db.Attribute,
+            as: "attributes",
+            attributes: ["price", "acreage", "published", "hastag"],
+          },
+          {
+            model: db.Overview,
+            as: "overviews",
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+          { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
+        ],
+      });
+
+      resolve({
+        status: posts?.dataValues ? "OK" : "ERR",
+        data: posts?.dataValues || null,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getAllPost,
   getLimitPost,
@@ -443,4 +479,5 @@ module.exports = {
   getLimitAdmin,
   updatePost,
   deletePost,
+  detailPost,
 };

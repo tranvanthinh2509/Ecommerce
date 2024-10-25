@@ -9,9 +9,14 @@ const formatDate = (timeObj) => {
   return `${day}, ${time} ${date}`;
 };
 
-const generateDate = () => {
+const generateDate = (dataString) => {
   let gapExpire = Math.floor(Math.random() * 29) + 1;
-  let today = new Date();
+  let today;
+  if (dataString) {
+    today = new Date(dataString);
+  } else {
+    today = new Date();
+  }
   let expireDay = moment(today).add(gapExpire, "d").toDate();
   return {
     today: formatDate(today),

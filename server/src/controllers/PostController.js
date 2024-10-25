@@ -156,13 +156,14 @@ const getLimitAdmin = async (req, res) => {
   try {
     const {
       page,
+      userId,
       categoryCode = null,
       cityCode = null,
       filter = null,
     } = req.query;
     console.log("123 ", req.query);
 
-    const response = await PostService.getLimitAdmin(page, {
+    const response = await PostService.getLimitAdmin(page, userId, {
       categoryCode,
       cityCode,
       filter,
@@ -194,6 +195,20 @@ const deletePost = async (req, res) => {
     });
   }
 };
+
+const detailPost = async (req, res) => {
+  try {
+    const { pid } = req.query;
+    console.log("123 ", req.query);
+
+    const response = await PostService.detailPost(pid);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      msg: "Error in controller : " + error,
+    });
+  }
+};
 module.exports = {
   createPost,
   getAllPost,
@@ -202,4 +217,5 @@ module.exports = {
   getLimitAdmin,
   updatePost,
   deletePost,
+  detailPost,
 };
