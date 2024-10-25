@@ -16,6 +16,7 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import Swal from "sweetalert2";
 import { validate } from "../../ultils/func";
 import { handleManagerPost } from "../../redux/slices/managerSlice";
+import { convertStringtoDate } from "../../ultils/Common/convertStringtoDate";
 
 function CreatePost({ isEdit }) {
   const dispatch = useDispatch();
@@ -38,6 +39,14 @@ function CreatePost({ isEdit }) {
       target: dataEdit?.overviews?.target || "",
       province: dataEdit?.province || "",
       userId: dataEdit?.userId || "",
+      expire:
+        (dataEdit &&
+          convertStringtoDate(
+            dataEdit?.overviews?.expire?.split(" ")[
+              dataEdit?.overviews?.expire?.split(" ").length - 1
+            ]
+          )) ||
+        new Date(),
       // category: dataEdit?.overviews?.type || "",
     };
 
@@ -104,13 +113,15 @@ function CreatePost({ isEdit }) {
     }));
   };
 
-  const mutationCreatePost = useMutationHooks(async (data) => {
-    const res = await PostService.createPost(data);
+  const mutationCreatePost = useMutationHooks(async (payload) => {
+    const { access_token, ...data } = payload;
+    const res = await PostService.createPost(data, access_token);
     return res;
   });
 
-  const mutationUpdatePost = useMutationHooks(async (data) => {
-    const res = await PostService.updatePost(data);
+  const mutationUpdatePost = useMutationHooks(async (payload) => {
+    const { access_token, ...data } = payload;
+    const res = await PostService.updatePost(data, access_token);
     return res;
   });
 
@@ -154,7 +165,6 @@ function CreatePost({ isEdit }) {
         finalPayload.attributesId = dataEdit?.attributesId;
         finalPayload.imagesId = dataEdit?.imagesId;
         finalPayload.overviewId = dataEdit?.overviewId;
-
         Swal.fire({
           title: "Do you want to save the changes?",
           showDenyButton: true,
@@ -164,7 +174,10 @@ function CreatePost({ isEdit }) {
         }).then((result) => {
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
-            mutationUpdatePost.mutate(finalPayload);
+            mutationUpdatePost.mutate({
+              ...finalPayload,
+              access_token: user?.access_token,
+            });
             Swal.fire("Saved!", "", "success");
             dispatch(handleManagerPost());
           } else if (result.isDenied) {
@@ -173,7 +186,10 @@ function CreatePost({ isEdit }) {
         });
       } else {
         setLoading(true);
-        await mutationCreatePost.mutate(finalPayload);
+        await mutationCreatePost.mutate({
+          ...finalPayload,
+          access_token: user?.access_token,
+        });
       }
     }
   };
@@ -228,6 +244,20 @@ function CreatePost({ isEdit }) {
             payload={payload}
             setPayload={setPayload}
           />
+          {dataEdit !== null && (
+            <div>
+              <h1 className="font-bold">Ngày hết hạn</h1>
+              <input
+                type="date"
+                value={payload?.expire}
+                onChange={(e) => {
+                  setPayload((prev) => ({ ...prev, expire: e.target.value }));
+                }}
+                className="p-2 w-1/2 mt-2 border border-gray-300 rounded-md"
+              />
+            </div>
+          )}
+
           <div className="w-full mt-2">
             <h2 className="font-bold ">Hình ảnh</h2>
             <small className="italic text-[-14] ">
@@ -265,6 +295,7 @@ function CreatePost({ isEdit }) {
                 id="file"
                 multiple
               />
+
               <div className="mt-3">
                 <h2 className="font-bold">Ảnh đã chọn</h2>
                 <div className="flex items-center gap-3 mt-3 flex-wrap">

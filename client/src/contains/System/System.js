@@ -6,14 +6,15 @@ import Header from "./Header";
 import { path } from "../../ultils/constant";
 import SideBar from "./SideBar";
 function System() {
-  //   const user1 = useSelector((state) => state?.user?.currentUser);
+  const user1 = useSelector((state) => state?.user?.currentUser);
 
+  const navagate = useNavigate();
   //   console.log(!user1);
-  //   useEffect(() => {
-  //     if (user1 === null) {
-  //       return <Navigate to={path.Login} replace={true} />;
-  //     }
-  //   }, [user1]);
+  useEffect(() => {
+    if (user1 === null) {
+      navagate("/");
+    }
+  }, [user1]);
 
   return (
     <div className="flex flex-col h-screen">

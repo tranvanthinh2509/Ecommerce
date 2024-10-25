@@ -14,11 +14,13 @@ import { updatePostItem } from "../../redux/slices/postSlice";
 import Swal from "sweetalert2";
 import { handleManagerPost } from "../../redux/slices/managerSlice";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 function ManagePost() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const managerPost = useSelector((state) => state?.manager?.managerPost);
+  const user = useSelector((state) => state?.user?.currentUser);
   const [post, setPost] = useState();
 
   const [page, setPage] = useState(1);
@@ -56,26 +58,36 @@ function ManagePost() {
   }, [category]);
 
   const muationPost = useMutationHooks(async (data) => {
-    let { code, page, filter } = data;
+    let { code, page, filter, access_token, userId } = data;
     let res;
     if (code === "home") {
       res = await PostService.getLimitAdmin(
         (code = null),
         page,
-        (filter = "default")
+        (filter = "default"),
+        access_token,
+        userId
       );
     } else {
-      res = await PostService.getLimitAdmin(code, page, (filter = "default"));
+      res = await PostService.getLimitAdmin(
+        code,
+        page,
+        (filter = "default"),
+        access_token,
+        userId
+      );
     }
 
     setPost(res?.data);
   });
 
+  const { isPending } = muationPost;
+
   // console.log("statusCOde", statusCode);
 
   const muationDeletePost = useMutationHooks(async (data) => {
-    let { postId } = data;
-    const res = await PostService.deletePost(postId);
+    let { postId, access_token } = data;
+    const res = await PostService.deletePost(postId, access_token);
     return res;
   });
   useEffect(() => {
@@ -83,7 +95,12 @@ function ManagePost() {
   }, [code]);
 
   useEffect(() => {
-    muationPost.mutate({ page: page, code: code });
+    muationPost.mutate({
+      page: page,
+      code: code,
+      access_token: user?.access_token,
+      userId: user?.id,
+    });
   }, [page, code, managerPost1]);
 
   const checkStatus = (datetime) => {
@@ -106,7 +123,10 @@ function ManagePost() {
     }).then(async (result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        await muationDeletePost.mutate({ postId: postId });
+        await muationDeletePost.mutate({
+          postId: postId,
+          access_token: user?.access_token,
+        });
         await Swal.fire("Saved!", "", "success");
         await dispatch(handleManagerPost());
       } else if (result.isDenied) {
@@ -203,7 +223,7 @@ function ManagePost() {
                 );
               })
             ) : (
-              <tr>Không có</tr>
+              <tr className="font-bold text-center">Không có</tr>
             )}
           </tbody>
         </table>
@@ -218,6 +238,7 @@ function ManagePost() {
         </div>
       </div>
       {isEdit && <UpdatePost setIsEdit={setIsEdit} />}
+      {isPending && <Loading isPending={isPending} fullScreen />}
     </div>
   );
 }

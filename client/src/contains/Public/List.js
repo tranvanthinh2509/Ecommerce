@@ -11,6 +11,7 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
+import Loading from "../../components/Loading";
 function List({ code }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -88,6 +89,8 @@ function List({ code }) {
     setDataPost(res.data);
   });
 
+  const { isPending } = mutationGetLimitPost;
+
   useEffect(() => {
     let params = [];
     for (let entry of searchParams.entries()) {
@@ -134,6 +137,7 @@ function List({ code }) {
     setCheckSelected(true);
     handleChangePage("default");
   };
+
   return (
     <div className="w-full bg-white rounded-lg border border-gray-300">
       <div className="p-2">
@@ -159,6 +163,7 @@ function List({ code }) {
           dataPost?.rows.map((item) => {
             return (
               <Item
+                id={item?.id}
                 title={item?.title}
                 price={item?.attributes?.price}
                 acreage={item?.attributes?.acreage}
@@ -172,13 +177,18 @@ function List({ code }) {
           })}
       </div>
       <div className="py-3 w-full flex justify-center ">
-        <Panigation
-          total={dataPost?.count}
-          sizePage={limit}
-          page={page}
-          setPage={setPage}
-        />
+        {dataPost?.count !== 0 ? (
+          <Panigation
+            total={dataPost?.count}
+            sizePage={limit}
+            page={page}
+            setPage={setPage}
+          />
+        ) : (
+          <h1 className="font-bold">Chưa có bài đăng nào</h1>
+        )}
       </div>
+      {isPending && <Loading isPending={isPending} fullScreen />}
     </div>
   );
 }

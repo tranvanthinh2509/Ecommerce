@@ -1,7 +1,12 @@
+import { Link } from "react-router-dom";
 import Image from "./Image";
 import { GrStar } from "react-icons/gr";
+import { path } from "../ultils/constant";
+import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
+
 const indexs = [0, 1, 2, 3];
 function Item({
+  id,
   image,
   title,
   description,
@@ -32,7 +37,12 @@ function Item({
   return (
     <div className="w-full flex items-start gap-2 px-5 py-3 border-y border-y-red-500">
       <div className="w-2/5 relative">
-        <div className="relative">
+        <Link
+          className="relative"
+          to={`chi-tiet/${formatVietnameseToString(
+            title?.replaceAll("/", "")
+          )}/${id}`}
+        >
           <Image
             src={image && image[1]}
             className="w-[280] h-[240] object-cover"
@@ -40,7 +50,7 @@ function Item({
           <div className="absolute left-1 bottom-2 text-white bg-black bg-opacity-70 px-2 text-[-14]">
             {image?.length} ảnh
           </div>
-        </div>
+        </Link>
       </div>
       <div className="w-3/5">
         <div className="flex w-full">

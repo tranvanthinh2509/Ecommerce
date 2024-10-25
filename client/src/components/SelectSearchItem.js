@@ -33,7 +33,7 @@ function SelectSearchItem({
       }}
     >
       <div
-        className=" w-[700]  h-[500] max-h-[500] bg-white mx-auto mt-16 rounded-lg overflow-hidden"
+        className=" w-[700]  h-[500] max-h-[500] bg-white mx-auto mt-16 rounded-lg overflow-hidden overflow-y-scroll"
         onClick={(e) => {
           e.stopPropagation();
         }}

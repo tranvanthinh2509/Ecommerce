@@ -6,12 +6,14 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import { jwtDecode } from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../redux/slices/userSlice";
 // import validate from "../../ultils/Common/validateField.js";
 import { validate } from "../../ultils/func";
 
 function Login() {
+  const userCheck = useSelector((state) => state?.user?.currentUser);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,6 +52,12 @@ function Login() {
   });
 
   const { data, isSuccess, isError } = mutation;
+
+  useEffect(() => {
+    if (userCheck) {
+      navigate("/");
+    }
+  }, [userCheck]);
   useEffect(() => {
     const response = data;
     if (response) {

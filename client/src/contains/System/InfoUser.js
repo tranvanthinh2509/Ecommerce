@@ -29,16 +29,19 @@ function InfoUser() {
   }, [user]);
 
   const mutationUpdatePost = useMutationHooks(async (data) => {
-    const { id, payload } = data;
-    const res = await UserService.updateUser(id, payload);
-    console.log("resUpdate ", res);
+    const { id, payload, access_token } = data;
+    const res = await UserService.updateUser(id, payload, access_token);
     return res;
   });
 
   const handleSubmit = async () => {
     const result = validate(payload, setInvalidFields);
     if (result === 0) {
-      await mutationUpdatePost.mutate({ id: user?.id, payload: payload });
+      await mutationUpdatePost.mutate({
+        id: user?.id,
+        payload: payload,
+        access_token: user?.access_token,
+      });
     }
   };
 
