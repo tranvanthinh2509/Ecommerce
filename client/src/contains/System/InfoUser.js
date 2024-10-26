@@ -12,6 +12,7 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 function InfoUser() {
   const user = useSelector((state) => state?.user?.currentUser);
   const [invalidFields, setInvalidFields] = useState([]);
+  const access_token = localStorage.getItem("access_token");
   const [payload, setPayload] = useState({
     name: "",
     avatar: null,
@@ -40,7 +41,7 @@ function InfoUser() {
       await mutationUpdatePost.mutate({
         id: user?.id,
         payload: payload,
-        access_token: user?.access_token,
+        access_token: JSON.parse(access_token),
       });
     }
   };

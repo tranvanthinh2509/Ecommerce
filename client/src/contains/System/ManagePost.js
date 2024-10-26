@@ -30,6 +30,7 @@ function ManagePost() {
   const [isEdit, setIsEdit] = useState(false);
   const [managerPost1, setManagerPost1] = useState(managerPost);
 
+  const access_token = localStorage.getItem("access_token");
   useEffect(() => {
     setManagerPost1(managerPost);
   }, [managerPost]);
@@ -59,6 +60,7 @@ function ManagePost() {
 
   const muationPost = useMutationHooks(async (data) => {
     let { code, page, filter, access_token, userId } = data;
+
     let res;
     if (code === "home") {
       res = await PostService.getLimitAdmin(
@@ -98,7 +100,7 @@ function ManagePost() {
     muationPost.mutate({
       page: page,
       code: code,
-      access_token: user?.access_token,
+      access_token: JSON.parse(access_token),
       userId: user?.id,
     });
   }, [page, code, managerPost1]);
@@ -125,7 +127,7 @@ function ManagePost() {
       if (result.isConfirmed) {
         await muationDeletePost.mutate({
           postId: postId,
-          access_token: user?.access_token,
+          access_token: JSON.parse(access_token),
         });
         await Swal.fire("Saved!", "", "success");
         await dispatch(handleManagerPost());

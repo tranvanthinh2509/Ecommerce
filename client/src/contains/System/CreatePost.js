@@ -57,6 +57,7 @@ function CreatePost({ isEdit }) {
   const [areaArr, setAreaArr] = useState([]);
   const [priceArr, setPriceArr] = useState([]);
   const [invalidFields, setInvalidFields] = useState([]);
+  const access_token = localStorage.getItem("access_token");
 
   useEffect(() => {
     if (dataEdit) {
@@ -176,7 +177,7 @@ function CreatePost({ isEdit }) {
           if (result.isConfirmed) {
             mutationUpdatePost.mutate({
               ...finalPayload,
-              access_token: user?.access_token,
+              access_token: JSON.parse(access_token),
             });
             Swal.fire("Saved!", "", "success");
             dispatch(handleManagerPost());
@@ -188,7 +189,7 @@ function CreatePost({ isEdit }) {
         setLoading(true);
         await mutationCreatePost.mutate({
           ...finalPayload,
-          access_token: user?.access_token,
+          access_token: JSON.parse(access_token),
         });
       }
     }

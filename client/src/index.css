@@ -9,6 +9,22 @@
   border-radius: 3px;
 }
 
+button.slick-arrow::before {
+  font-size: 50px !important;
+  color: yellow !important;
+}
+
+.slick-next {
+  right: 40px !important;
+  z-index: 10 !important;
+  top: 46% !important;
+}
+
+.slick-prev {
+  left: 10px !important;
+  z-index: 10 !important;
+  top: 46% !important;
+}
 .example-track.example-track-0 {
   background: #ccc;
 }
