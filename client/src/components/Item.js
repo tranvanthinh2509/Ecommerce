@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Image from "./Image";
 import { GrStar } from "react-icons/gr";
 import { path } from "../ultils/constant";
@@ -18,6 +18,7 @@ function Item({
   phone,
   zalo,
 }) {
+  const navigate = useNavigate();
   const handleStar = (star) => {
     let stars = [];
     for (let i = 1; i <= +star; i++)
@@ -34,14 +35,28 @@ function Item({
   //     })
   // );
 
+  const handleNavigateDetail = () => {
+    navigate(
+      `/${path.DETAIL_ALL}${formatVietnameseToString(
+        title?.replaceAll("/", "")
+      )}/${id}`
+    );
+  };
+
   return (
     <div className="w-full flex items-start gap-2 px-5 py-3 border-y border-y-red-500">
       <div className="w-2/5 relative">
-        <Link
+        <div
           className="relative"
-          to={`chi-tiet/${formatVietnameseToString(
-            title?.replaceAll("/", "")
-          )}/${id}`}
+          // to={`chi-tiet/${formatVietnameseToString(
+          //   title?.replaceAll("/", "")
+          // )}/${id}`}
+          // to={`${path.DETAIL_ALL}${formatVietnameseToString(
+          //   title?.replaceAll("/", "")
+          // )}/${id}`}
+          onClick={() => {
+            handleNavigateDetail();
+          }}
         >
           <Image
             src={image && image[1]}
@@ -50,11 +65,16 @@ function Item({
           <div className="absolute left-1 bottom-2 text-white bg-black bg-opacity-70 px-2 text-[-14]">
             {image?.length} ảnh
           </div>
-        </Link>
+        </div>
       </div>
       <div className="w-3/5">
         <div className="flex w-full">
-          <div className="text-red-600 font-medium overflow-hidden line-clamp-3">
+          <div
+            className="text-red-600 font-medium overflow-hidden line-clamp-3 cursor-pointer hover:underline"
+            onClick={() => {
+              handleNavigateDetail();
+            }}
+          >
             <span className="">{title}</span>
           </div>
         </div>
@@ -97,25 +117,26 @@ function Item({
         </p>
         <div className="my-3 flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1 w-2/5">
-            <Image
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb-NGEQDekk2BwsllLjk4tcIM_BPIzXECdsg&s"
-              className="w-8 h-8 object-cover rounded-[-50]"
-            />
+            <Image src={""} className="w-8 h-8 object-cover rounded-[-50]" />
             <span className="text-gray-500">{name}</span>
           </div>
           <div className="flex items-center gap-1 ">
-            <button
-              type="button"
-              className="bg-blue-700 text-white p-1 rounded-md"
-            >
-              {`Gọi ${phone}`}
-            </button>
-            <button
-              type="button"
-              className="text-blue-700 px-1 rounded-md border border-blue-700"
-            >
-              Nhắn zalo
-            </button>
+            <a href={`tel:${phone}`}>
+              <button
+                type="button"
+                className="bg-blue-700 text-white p-1 rounded-md"
+              >
+                {`Gọi ${phone}`}
+              </button>
+            </a>
+            <a href={`https://zalo.me/${zalo}`} target="_blank">
+              <button
+                type="button"
+                className="text-blue-700 px-1 rounded-md border border-blue-700"
+              >
+                Nhắn zalo
+              </button>
+            </a>
           </div>
         </div>
       </div>

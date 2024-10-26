@@ -16,7 +16,16 @@ function Header() {
   const user1 = useSelector((state) => state.user.currentUser);
 
   const [openMenu, setOpenMenu] = useState(false);
-  const [user, setUser] = useState(user1 ? true : false);
+  const [user, setUser] = useState(false);
+
+  useEffect(() => {
+    if (user1) {
+      setUser(true);
+    } else {
+      setUser(false);
+    }
+  }, [user1]);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,11 +38,11 @@ function Header() {
     });
   };
 
+  const menuRef = useRef();
+
   const goToLogin = useCallback((flag) => {
     navigate("/login", { state: flag });
   }, []);
-
-  const menuRef = useRef();
 
   const MenuUser = [
     {
@@ -88,11 +97,11 @@ function Header() {
         document.removeEventListener("click", handler);
       };
     }
-  });
+  }, [user]);
 
   return (
     <div className="w-1100 flex items-center justify-between">
-      <Link to="/">
+      <Link to="/" refresh="true">
         <Image src={images.logo} className="w-[240] h-[70] object-contain" />
       </Link>
 
@@ -100,7 +109,7 @@ function Header() {
         <div className="flex items-center justify-between gap-5">
           <div>
             <span>
-              Xin chào, <span className="font-bold">Trần Văn Thịnh</span>
+              Xin chào, <span className="font-bold">{user1?.name}</span>
             </span>
             <p className="text-[-14]">
               TK chính: <span>0</span> VND
@@ -110,7 +119,9 @@ function Header() {
           <div className="relative" ref={menuRef}>
             <Image
               className="w-12 h-12 rounded-[-50] object-cover border-2  hover:cursor-pointer"
-              onClick={handleOpenMenu}
+              onClick={() => {
+                handleOpenMenu();
+              }}
             />
 
             {openMenu && (

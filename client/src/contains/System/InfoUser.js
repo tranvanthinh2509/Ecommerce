@@ -3,13 +3,16 @@ import { Button, Image } from "../../components";
 import InputFormInfo from "../../components/InputFormInfo";
 import InputOverview from "../../components/InputOverview";
 import InputReadOnlyInfo from "../../components/InputReadOnly";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as PostService from "../../services/post";
 import { validate } from "../../ultils/func";
 import * as UserService from "../../services/auth";
 import { useMutationHooks } from "../../hooks/useMutationHook";
+import Swal from "sweetalert2";
+import { updateUser } from "../../redux/slices/userSlice";
 
 function InfoUser() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state?.user?.currentUser);
   const [invalidFields, setInvalidFields] = useState([]);
   const access_token = localStorage.getItem("access_token");
@@ -35,13 +38,30 @@ function InfoUser() {
     return res;
   });
 
+  const { data, isSuccess, isError } = mutationUpdatePost;
+
   const handleSubmit = async () => {
     const result = validate(payload, setInvalidFields);
     if (result === 0) {
-      await mutationUpdatePost.mutate({
-        id: user?.id,
-        payload: payload,
-        access_token: JSON.parse(access_token),
+      Swal.fire({
+        title: "Do you want to update this info?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        denyButtonText: `Don't save`,
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          await mutationUpdatePost.mutate({
+            id: user?.id,
+            payload: payload,
+            access_token: JSON.parse(access_token),
+          });
+
+          // await dispatch(handleManagerPost());
+        } else if (result.isDenied) {
+          Swal.fire("Delete are not saved", "", "info");
+        }
       });
     }
   };
@@ -61,6 +81,18 @@ function InfoUser() {
     }
   };
 
+  useEffect(() => {
+    let testPayload = {
+      ...user,
+      ...payload,
+    };
+    if (isSuccess) {
+      Swal.fire("Saved!", data?.msg, "success");
+      dispatch(updateUser(testPayload));
+    } else if (isError) {
+      Swal.fire("Failed!", "Update is failed", "error");
+    }
+  }, [isSuccess, isError]);
   return (
     <div className="px-12 py-8 w-full bg-primary mb-28">
       <h1 className="py-3 text-2xl font-semibold border-b border-gray-300 w-full ">

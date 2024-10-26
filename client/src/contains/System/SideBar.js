@@ -47,7 +47,7 @@ function SideBar() {
       <div className="flex items-center gap-3 my-3">
         <Image
           className="w-16 h-16 object-cover rounded-[-50] flex-none"
-          src={user?.image}
+          src={user?.avatar}
         />
         <div className="flex-auto">
           <h1 className="font-bold">{user?.name} </h1>

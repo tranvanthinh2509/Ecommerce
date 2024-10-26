@@ -9,8 +9,14 @@ import { PiPlaceholderLight } from "react-icons/pi";
 import { CiClock2 } from "react-icons/ci";
 import moment from "moment";
 import { Map } from "mapbox-gl";
+import { Button, Image } from "../../components";
+import { FaPhoneAlt } from "react-icons/fa";
+import NewPost from "./NewPost";
+import Loading from "../../components/Loading";
+
 function PageDetail() {
   const params = useParams();
+  console.log("123 ", params);
   const [postItem, setPostItem] = useState();
 
   const mutationDetailPost = useMutationHooks(async (data) => {
@@ -20,19 +26,22 @@ function PageDetail() {
     return res;
   });
 
+  const { isPending } = mutationDetailPost;
+
   useEffect(() => {
     if (params?.postId) {
       mutationDetailPost.mutate({ pid: params?.postId });
     }
   }, [params]);
-  console.log("123 ", postItem);
 
   const formatTime = (createdAt) => {
     return moment(createdAt).fromNow();
   };
 
+  window.scrollTo(0, 0);
   return (
-    <div className="w-full flex gap-3">
+    <div className="w-full flex gap-3 ">
+      {isPending && <Loading isPending={isPending} fullScreen />}
       <div className="w-2/3">
         <div className="bg-white mb-12">
           <SliderCustom images={postItem?.images.image} />
@@ -125,8 +134,8 @@ function PageDetail() {
               </div>
             </div>
 
-            <div>
-              <h1 className="text-xl font-bold">Bản đồ</h1>
+            <div className="mb-10">
+              {/* <h1 className="text-xl font-bold">Bản đồ</h1> */}
               {/* <div>
                 <Map
                   mapLib={import("mapbox-gl")}
@@ -143,7 +152,35 @@ function PageDetail() {
           </div>
         </div>
       </div>
-      <div className="w-1/3">Side bar</div>
+      <div className="w-1/3">
+        <div className="w-full bg-yellow-400 p-4 flex flex-col items-center gap-3 rounded-md">
+          <Image src="" className="w-20 h-20 rounded-[-50] object-cover" />
+          <h1 className="font-bold text-xl">{postItem?.user?.name}</h1>
+          {/* <Button
+            text={postItem?.user?.phone}
+            bgColor="bg-green-400 "
+            textColor="text-white font-bold text-xl"
+            icBefore={<FaPhoneAlt />}
+            fullWidth
+          /> */}
+          <div className="flex justify-center items-center gap-3 py-2 w-full rounded-md bg-green-400 text-white font-bold text-xl">
+            <span>
+              <FaPhoneAlt />
+            </span>
+            <a href={`tel:${postItem?.user?.phone}`}>{postItem?.user?.phone}</a>
+          </div>
+
+          <div className="flex justify-center items-center gap-3 py-2 w-full rounded-md bg-white text-black font-semibold text-[16] border border-black">
+            <div className="p-1 bg-blue-500 text-white rounded-[-50] text-xs">
+              Zalo
+            </div>
+            <a href={`https://zalo.me/${postItem?.user?.zalo}`} target="_blank">
+              {postItem?.user?.zalo}
+            </a>
+          </div>
+        </div>
+        <NewPost />
+      </div>
     </div>
   );
 }

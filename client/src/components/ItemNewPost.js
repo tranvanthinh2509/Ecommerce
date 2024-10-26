@@ -3,10 +3,22 @@ import Image from "./Image";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/locale/vi";
+import { path } from "../ultils/constant";
+import { formatVietnameseToString } from "../ultils/Common/formatVietnameseToString";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function ItemNewPost({ data, index }) {
+  const navigate = useNavigate();
   const formatTime = (createdAt) => {
     return moment(createdAt).fromNow();
+  };
+
+  const handleNavigateDetail = () => {
+    navigate(
+      `/${path.DETAIL_ALL}${formatVietnameseToString(
+        data?.title?.replaceAll("/", "")
+      )}/${data?.id}`
+    );
   };
   const handleStar = (star) => {
     let stars = [];
@@ -21,14 +33,22 @@ function ItemNewPost({ data, index }) {
           index && "border-none"
         }`}
       >
-        <div className="w-16 h-16 flex-none">
+        <div
+          className="w-16 h-16 flex-none"
+          onClick={() => handleNavigateDetail()}
+        >
           <Image
             src={data?.images?.image && JSON.parse(data?.images?.image)[0]}
             className="w-16 h-16 object-cover rounded-sm"
           />
         </div>
         <div className="flex flex-col content-between flex-auto">
-          <span className="overflow-hidden line-clamp-2 text-blue-800 mb-3 text-[-14] leading-4">
+          <span
+            className="overflow-hidden line-clamp-2 text-blue-800 mb-3 text-[-14] leading-4 hover:underline cursor-pointer"
+            onClick={() => {
+              handleNavigateDetail();
+            }}
+          >
             {/* <span className="flex justify-center mt-2 ">
               {handleStar(+"5").length > 0 &&
                 handleStar(+"5").map((star, number) => {
