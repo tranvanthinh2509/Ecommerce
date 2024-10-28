@@ -55,16 +55,16 @@ function Header() {
       icon: <FaRegListAlt color="red" />,
       path: "/he-thong/quan-li-tin-dang",
     },
-    {
-      title: "Nạp tiền",
-      icon: <FaWallet color="#1c8b0e" />,
-      path: null,
-    },
-    {
-      title: "Lịch sử nạp tiền",
-      icon: <FaHistory color="black" />,
-      path: null,
-    },
+    // {
+    //   title: "Nạp tiền",
+    //   icon: <FaWallet color="#1c8b0e" />,
+    //   path: null,
+    // },
+    // {
+    //   title: "Lịch sử nạp tiền",
+    //   icon: <FaHistory color="black" />,
+    //   path: null,
+    // },
     {
       title: "Thông tin cá nhân",
       icon: <RxAvatar />,
@@ -101,7 +101,7 @@ function Header() {
 
   return (
     <div className="w-1100 flex items-center justify-between">
-      <Link to="/" refresh="true">
+      <Link to="/">
         <Image src={images.logo} className="w-[240] h-[70] object-contain" />
       </Link>
 
@@ -136,6 +136,9 @@ function Header() {
             textColor="text-white"
             bgColor="bg-secondary2"
             icBefore={<CiCirclePlus fontSize="20px" />}
+            onClick={() => {
+              navigate("/he-thong/tao-moi-tin-dang");
+            }}
           />
         </div>
       ) : (
@@ -157,6 +160,9 @@ function Header() {
             text="Đăng Tin Mới"
             textColor="text-white"
             bgColor="bg-secondary2"
+            onClick={() => {
+              navigate("/he-thong/tao-moi-tin-dang");
+            }}
           />
         </div>
       )}

@@ -11,13 +11,19 @@ import * as CityService from "../../services/city";
 import * as AreaService from "../../services/area";
 import * as PriceService from "../../services/price";
 import { getCode } from "../../ultils/Common/getCodes";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { path } from "../../ultils/constant";
+import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
 
 function Search() {
+  const navigate = useNavigate();
+
   const [dataCate, setDataCate] = useState();
   const [dataCity, setDataCity] = useState();
   const [dataArea, setDataArea] = useState();
   const [dataPrice, setDataPrice] = useState();
   const [queries, setQueries] = useState({});
+
   const SearchData = [
     {
       title: "Tìm tất cả",
@@ -90,7 +96,47 @@ function Search() {
       queryCodeObj[item[0]] = item[1];
     });
 
-    console.log("123 ", queryCodeObj);
+    const queryText = Object.entries(queries).filter(
+      (item) => !item[0].includes("Code") || !item[0].includes("Number")
+    );
+    let queryTextObj = {};
+    queryText.forEach((item) => {
+      queryTextObj[item[0]] = item[1];
+    });
+    let titleSearch = `${
+      queryTextObj.category ? queryTextObj.category : "Cho thuê tất cả"
+    } ${queryTextObj.province ? `tỉnh ${queryTextObj.province}` : ""} ${
+      queryTextObj.price ? `giá ${queryTextObj.price}` : ""
+    } ${queryTextObj.area ? `diện tích ${queryTextObj.area}` : ""} `;
+
+    const finalQuerryCodeObj = {
+      categoryCode: queryCodeObj?.categoriesCode || null,
+      cityCode: queryCodeObj?.citiesCode || null,
+      priceCode: queryCodeObj?.pricesCode || null,
+      areaCode: queryCodeObj?.areasCode || null,
+    };
+
+    // console.log("123 ", queries);
+    if (finalQuerryCodeObj?.categoryCode === null) {
+      navigate(
+        {
+          pathname: "/",
+          search: createSearchParams(finalQuerryCodeObj).toString(),
+        },
+        { state: { titleSearch } }
+      );
+    } else {
+      navigate(
+        {
+          pathname: `/${formatVietnameseToString(queries?.categories)}`,
+          search: createSearchParams(finalQuerryCodeObj).toString(),
+        },
+        { state: { titleSearch } }
+      );
+    }
+
+    // console.log("123123 ", queryCodeObj);
+    // console.log("finalQuerryCodeObj ", finalQuerryCodeObj);
   };
 
   return (

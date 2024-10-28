@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { path } from "../../ultils/constant";
 import Search from "./Search";
 import Support from "./Support";
@@ -7,6 +8,12 @@ import { Outlet, useLocation } from "react-router-dom";
 
 function Home() {
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.path === "/") {
+      window.location.reload();
+    }
+  }, [location.path]);
 
   return (
     <div className="w-full flex flex-col items-center h-full ">

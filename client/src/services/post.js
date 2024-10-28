@@ -40,6 +40,16 @@ export const getLimitPost = async (
   return res.data;
 };
 
+export const getLimitPostNew = async (query) => {
+  const res = await axios({
+    method: "get",
+    url: `${process.env.REACT_APP_SERVER_URL}/api/post/getLimitPost`,
+    params: query,
+  });
+
+  return res.data;
+};
+
 export const getAllPost = async (
   code,
   page,

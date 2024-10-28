@@ -168,7 +168,7 @@ function ManagePost() {
             </tr>
           </thead>
           <tbody>
-            {post?.rows ? (
+            {post?.rows.length !== 0 ? (
               post?.rows.map((item) => {
                 return (
                   <tr className="border">
@@ -225,7 +225,9 @@ function ManagePost() {
                 );
               })
             ) : (
-              <tr className="font-bold text-center">Không có</tr>
+              <tr className="font-bold h-20 text-xl flex justify-center items-center">
+                Không có tin đăng
+              </tr>
             )}
           </tbody>
         </table>

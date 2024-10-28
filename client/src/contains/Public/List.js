@@ -14,16 +14,29 @@ import {
 import Loading from "../../components/Loading";
 function List({ code }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const category = useLocation();
   const [dataPost, setDataPost] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(8);
   const [type, setType] = useState(true);
-  const [selected, setSelected] = useState("default");
+  const [selected, setSelected] = useState(["default"]);
   const [checkSelected, setCheckSelected] = useState(false);
   const [priceCode, setPriceCode] = useState();
   const [areaCode, setAreaCode] = useState();
+
+  const [queryToApi, setQueryToApi] = useState({
+    categoryCode: code,
+    order: selected,
+    priceCode: priceCode,
+    areaCode: areaCode,
+    page: page,
+  });
+
+  const isEmptyObject = (obj) => {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  };
 
   // taoj param cua thanh filter
   const [paramsSearch] = useSearchParams();
@@ -57,39 +70,37 @@ function List({ code }) {
     });
   };
 
-  const mutationGetLimitPost = useMutationHooks(async (data) => {
-    let { code, page, filter, areaCode, priceCode } = data;
+  // const mutationGetLimitPost = useMutationHooks(async (data) => {
+  //   let { code, page, filter, areaCode, priceCode } = data;
 
-    let res;
-    if (code === "home") {
-      // res = await PostService.getAllPost(
-      //   code,
-      //   page,
-      //   filter,
-      //   priceCode,
-      //   areaCode
-      // );
+  //   let res;
+  //   if (code === "home") {
+  //     res = await PostService.getLimitPost(
+  //       (code = null),
+  //       page,
+  //       filter,
+  //       priceCode,
+  //       areaCode
+  //     );
+  //   } else {
+  //     res = await PostService.getLimitPost(
+  //       code,
+  //       page,
+  //       filter,
+  //       priceCode,
+  //       areaCode
+  //     );
+  //   }
+  //   setDataPost(res.data);
+  // });
 
-      res = await PostService.getLimitPost(
-        (code = null),
-        page,
-        filter,
-        priceCode,
-        areaCode
-      );
-    } else {
-      res = await PostService.getLimitPost(
-        code,
-        page,
-        filter,
-        priceCode,
-        areaCode
-      );
-    }
+  const mutationGetLimitPostNew = useMutationHooks(async (data) => {
+    const res = await PostService.getLimitPostNew(data);
+
     setDataPost(res.data);
   });
 
-  const { isPending } = mutationGetLimitPost;
+  const { isPending } = mutationGetLimitPostNew;
 
   useEffect(() => {
     let params = [];
@@ -106,37 +117,121 @@ function List({ code }) {
       }
     });
 
-    setAreaCode(searchParamsObject?.areaCode?.[0]);
-    setPriceCode(searchParamsObject?.priceCode?.[0]);
+    if (searchParamsObject?.categoryCode) {
+      if (searchParamsObject?.categoryCode[0] === "null") {
+        searchParamsObject = {
+          ...searchParamsObject,
+          categoryCode: "home",
+        };
+      } else {
+        searchParamsObject = {
+          ...searchParamsObject,
+          categoryCode: searchParamsObject?.categoryCode[0],
+        };
+      }
+    }
+    if (searchParamsObject?.cityCode) {
+      searchParamsObject = {
+        ...searchParamsObject,
+        cityCode: searchParamsObject?.cityCode[0],
+      };
+    }
+
+    if (searchParamsObject?.areaCode) {
+      if (searchParamsObject?.areaCode[0] === "null") {
+        searchParamsObject = {
+          ...searchParamsObject,
+          areaCode: searchParamsObject?.areaCode[0],
+        };
+      } else {
+        searchParamsObject = {
+          ...searchParamsObject,
+          areaCode: searchParamsObject?.areaCode,
+        };
+      }
+    }
+
+    if (searchParamsObject?.priceCode) {
+      if (searchParamsObject?.priceCode[0] === "null") {
+        searchParamsObject = {
+          ...searchParamsObject,
+          priceCode: searchParamsObject?.priceCode[0],
+        };
+      } else {
+        searchParamsObject = {
+          ...searchParamsObject,
+          priceCode: searchParamsObject?.priceCode,
+        };
+      }
+    }
+
+    // setAreaCode(searchParamsObject?.areaCode);
+    // setPriceCode(searchParamsObject?.priceCode);
+
+    setQueryToApi((prev) => ({ ...prev, ...searchParamsObject }));
+
+    if (isEmptyObject(searchParamsObject)) {
+      setQueryToApi({
+        categoryCode: code,
+        order: selected,
+        priceCode: priceCode,
+        areaCode: areaCode,
+        page: 1,
+      });
+
+      handleDefaut();
+    }
   }, [searchParams]);
 
   useEffect(() => {
     setPage(1);
     setType(true);
+
+    setQueryToApi((prev) => ({
+      ...prev,
+      categoryCode: code,
+      // priceCode: priceCode,
+      // areaCode: areaCode,
+    }));
+
+    setSelected("default");
+    handleDefaut();
   }, [code, priceCode, areaCode]);
 
   useEffect(() => {
-    mutationGetLimitPost.mutate({
-      code: code,
-      page: page,
-      filter: selected,
-      areaCode,
-      priceCode,
-    });
-  }, [code, page, selected, priceCode, areaCode]);
+    setQueryToApi((prev) => ({ ...prev, page: page }));
+  }, [page, searchParams]);
+
+  // useEffect(() => {
+  //   mutationGetLimitPost.mutate({
+  //     code: code,
+  //     page: page,
+  //     filter: selected,
+  //     areaCode,
+  //     priceCode,
+  //   });
+  // }, [code, page, selected, priceCode, areaCode]);
+
+  useEffect(() => {
+    if (queryToApi.categoryCode !== "none") {
+      mutationGetLimitPostNew.mutate(queryToApi);
+    }
+  }, [queryToApi]);
 
   const handleLatest = () => {
     setType(false);
-    setSelected("latest");
+    setSelected(["latest"]);
     setCheckSelected(true);
     handleChangePage("latest");
   };
   const handleDefaut = () => {
     setType(true);
-    setSelected("default");
+    setSelected(["default"]);
     setCheckSelected(true);
     handleChangePage("default");
   };
+
+  // console.log("testToApi ", queryToApi);
 
   return (
     <div className="w-full bg-white rounded-lg border border-gray-300">

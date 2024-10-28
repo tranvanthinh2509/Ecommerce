@@ -135,19 +135,21 @@ function PageDetail() {
             </div>
 
             <div className="mb-10">
-              {/* <h1 className="text-xl font-bold">Bản đồ</h1> */}
-              {/* <div>
-                <Map
-                  mapLib={import("mapbox-gl")}
-                  initialViewState={{
-                    longitude: -100,
-                    latitude: 40,
-                    zoom: 3.5,
-                  }}
-                  style={{ width: 600, height: 400 }}
-                  mapStyle="mapbox://styles/mapbox/streets-v9"
-                />
-              </div> */}
+              <h1 className="text-xl font-bold">Bản đồ</h1>
+              <div className="mt-4">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.0845870453127!2d108.22493121187397!3d16.0610997845531!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219d2f38ce45d%3A0xbfa47dd116d4db88!2zQ-G6p3UgUuG7k25nLCBI4bqjaSBDaMOidSwgxJDDoCBO4bq1bmcgNTUwMDAwLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1730086128074!5m2!1svi!2s"
+                  className="w-full h-80"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+                <span className="italic text-gray-500">
+                  Vì nhiều lý do nên bản đồ chỉ mang tính chất minh họa. Vui
+                  lòng thông cảm cho chúng tôi! Bạn có thể nhập địa chỉ vào bản
+                  đồ để thấy dịch vụ của chúng tôi!
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -11,8 +11,9 @@ import NewPost from "./NewPost";
 function Rental() {
   const location = useLocation();
   const [categoryCurrent, setCategoryCurrent] = useState();
-  const [categoryCode, setCategoryCode] = useState("none");
   const { data: categories } = useQuery({ queryKey: ["Category"] });
+  const [categoryCode, setCategoryCode] = useState("none");
+
   useEffect(() => {
     if (categories?.data) {
       const category = categories.data.find(

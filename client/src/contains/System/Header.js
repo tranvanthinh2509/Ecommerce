@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import * as CategoryService from "../../services/category";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { formatVietnameseToString } from "../../ultils/Common/formatVietnameseToString";
 
 function Header() {
@@ -25,7 +25,7 @@ function Header() {
           </NavLink>
           {category?.data.map((item) => (
             <NavLink
-              to={formatVietnameseToString(item.value)}
+              to={`/${formatVietnameseToString(item.value)}`}
               className={({ isActive }) => {
                 return `px-3 h-10 flex items-center  text-[-14] font-bold ${
                   isActive === true && "text-gray-400"
