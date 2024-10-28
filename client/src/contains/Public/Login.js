@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../redux/slices/userSlice";
 // import validate from "../../ultils/Common/validateField.js";
 import { validate } from "../../ultils/func";
+import Loading from "../../components/Loading";
 
 function Login() {
   const userCheck = useSelector((state) => state?.user?.currentUser);
@@ -51,7 +52,7 @@ function Login() {
     return res;
   });
 
-  const { data, isSuccess, isError } = mutation;
+  const { data, isSuccess, isError, isPending } = mutation;
 
   useEffect(() => {
     if (userCheck) {
@@ -115,6 +116,7 @@ function Login() {
 
   return (
     <div className="w-600 bg-white px-8 pt-8 pb-24 rounded-lg border">
+      {isPending && <Loading isPending={isPending} fullScreen />}
       <h1 className="font-bold text-3xl mb-3">
         {signIn ? "Đăng nhập" : "Đăng ký"}
       </h1>
@@ -141,7 +143,7 @@ function Login() {
         />
         <InputForm
           label="Mật khẩu"
-          type="text"
+          type={"password"}
           nameKey="password"
           value={payload.password}
           setValue={setPayload}
@@ -151,7 +153,7 @@ function Login() {
         {signIn === false && (
           <InputForm
             label="Xác nhận mật khẩu"
-            type="text"
+            type={"password"}
             nameKey="confirmPassword"
             value={payload.confirmPassword}
             setValue={setPayload}

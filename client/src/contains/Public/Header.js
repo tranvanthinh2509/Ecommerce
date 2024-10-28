@@ -118,6 +118,7 @@ function Header() {
 
           <div className="relative" ref={menuRef}>
             <Image
+              src={user1?.image}
               className="w-12 h-12 rounded-[-50] object-cover border-2  hover:cursor-pointer"
               onClick={() => {
                 handleOpenMenu();

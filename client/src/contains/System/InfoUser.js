@@ -26,7 +26,7 @@ function InfoUser() {
   useEffect(() => {
     setPayload({
       name: user?.name || "",
-      avatar: user?.avatar,
+      avatar: user?.image,
       fbUrl: user?.fbUrl || "",
       zalo: user?.zalo || "",
     });
@@ -117,6 +117,7 @@ function InfoUser() {
             type="zalo"
             label={"Zalo"}
             value={payload}
+            nameKey="phone"
             setValue={setPayload}
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
