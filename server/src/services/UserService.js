@@ -103,6 +103,7 @@ const updateUser = (id, payload) => {
       const respone = await db.User.update(payload, {
         where: { id: id },
       });
+
       resolve({
         status: respone[0] > 0 ? "OK" : "ERR",
         msg: respone[0] > 0 ? "Update" : "Failer to update user",

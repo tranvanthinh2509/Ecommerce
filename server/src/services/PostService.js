@@ -278,6 +278,7 @@ const getLimitPost = (
   return new Promise(async (resolve, reject) => {
     try {
       let order;
+
       if (filter === "default") {
         order = [["createdAt", "ASC"]];
       } else {
@@ -289,7 +290,7 @@ const getLimitPost = (
       let offset = !page || +page <= 1 ? 0 : +page - 1;
       // if (priceNumber) queries.price = { [Op.between]: priceNumber };
       // if (areaNumber) queries.areaNumber = { [Op.between]: areaNumber };
-      if (categoryCode && categoryCode !== "null")
+      if (categoryCode && categoryCode !== "home")
         queries.categoryCode = categoryCode;
       if (priceCode && priceCode !== "null") queries.priceCode = priceCode;
       if (areaCode && areaCode !== "null") queries.areaCode = areaCode;
@@ -444,7 +445,6 @@ const detailPost = (pid) => {
         where: {
           id: pid,
         },
-        attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           { model: db.Image, as: "images", attributes: ["image"] },
           {

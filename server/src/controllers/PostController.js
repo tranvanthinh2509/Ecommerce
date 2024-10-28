@@ -121,10 +121,10 @@ const getLimitPost = async (req, res) => {
       priceCode = null,
       areaCode = null,
       cityCode = null,
-      filter = null,
     } = req.query;
-    console.log("123 ", req.query);
 
+    const filter = req.query.order[0];
+    console.log("123 ", req.query);
     const response = await PostService.getLimitPost(page, {
       categoryCode,
       priceNumber,
@@ -161,7 +161,6 @@ const getLimitAdmin = async (req, res) => {
       cityCode = null,
       filter = null,
     } = req.query;
-    console.log("123 ", req.query);
 
     const response = await PostService.getLimitAdmin(page, userId, {
       categoryCode,
