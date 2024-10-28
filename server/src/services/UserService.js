@@ -99,6 +99,11 @@ const detailUser = (id) => {
 
 const updateUser = (id, payload) => {
   return new Promise(async (resolve, reject) => {
+    payload = {
+      ...payload,
+      image: payload?.avatar,
+    };
+    console.log("123 ", payload);
     try {
       const respone = await db.User.update(payload, {
         where: { id: id },

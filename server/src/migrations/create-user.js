@@ -20,6 +20,9 @@ module.exports = {
       zalo: {
         type: Sequelize.STRING,
       },
+      image: {
+        type: Sequelize.STRING,
+      },
       role: {
         type: Sequelize.STRING,
       },
