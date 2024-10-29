@@ -28,5 +28,5 @@ connectDatabase();
 
 const port = process.env.PORT || 8888;
 const listener = app.listen(port, () => {
-  console.log(`Server is running on the port ${listener.address().port}`);
+  console.log(`Server is running on the port: ${listener.address().port}`);
 });
