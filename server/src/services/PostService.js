@@ -309,7 +309,11 @@ const getLimitPost = (
             as: "attributes",
             attributes: ["price", "acreage", "published", "hastag"],
           },
-          { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
+          {
+            model: db.User,
+            as: "user",
+            attributes: ["name", "zalo", "phone", "image"],
+          },
         ],
         order,
       });
@@ -405,7 +409,11 @@ const getLimitAdmin = (page, userId, { categoryCode, filter, cityCode }) => {
             as: "overviews",
             attributes: { exclude: ["createdAt", "updatedAt"] },
           },
-          { model: db.User, as: "user", attributes: ["name", "zalo", "phone"] },
+          {
+            model: db.User,
+            as: "user",
+            attributes: ["name", "zalo", "phone", "image"],
+          },
         ],
         order,
       });

@@ -127,7 +127,7 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.query;
     const { ...payload } = req.body;
-
+    console.log(payload);
     const response = await UserService.updateUser(id, payload);
     return res.status(200).json(response);
   } catch (error) {
