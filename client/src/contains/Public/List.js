@@ -267,6 +267,7 @@ function List({ code }) {
                 phone={item?.user?.phone}
                 address={item?.address}
                 image={item?.images?.image && JSON.parse(item?.images?.image)}
+                avatar={item?.user?.image}
               />
             );
           })}

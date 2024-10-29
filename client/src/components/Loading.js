@@ -5,7 +5,7 @@ function Loading({ isPending, fullScreen }) {
     <div
       className={`${
         fullScreen &&
-        "fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-40"
+        "fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-40 z-50"
       }`}
     >
       <ColorRing

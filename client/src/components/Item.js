@@ -17,6 +17,7 @@ function Item({
   name,
   phone,
   zalo,
+  avatar,
 }) {
   const navigate = useNavigate();
   const handleStar = (star) => {
@@ -117,7 +118,10 @@ function Item({
         </p>
         <div className="my-3 flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1 w-2/5">
-            <Image src={""} className="w-8 h-8 object-cover rounded-[-50]" />
+            <Image
+              src={avatar}
+              className="w-8 h-8 object-cover rounded-[-50]"
+            />
             <span className="text-gray-500">{name}</span>
           </div>
           <div className="flex items-center gap-1 ">
